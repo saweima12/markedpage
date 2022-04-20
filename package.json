@@ -1,0 +1,66 @@
+{
+  "version": "1.2.12",
+  "description": "Sveltekit markdown provider & classification utilities",
+  "main": "dist/main.cjs",
+  "module": "dist/main.mjs",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "uvu -r tsm test test.ts$",
+    "lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
+    "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. .",
+    "publish": "bash ./scripts/publish.sh"
+  },
+  "files": [
+    "dist/*"
+  ],
+  "exports": {
+    "import": "./dist/main.mjs",
+    "require": "./dist/main.cjs",
+    "types": "./dist/main.mjs.d.ts"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "@rollup/plugin-sucrase": "^4.0.2",
+    "@rollup/plugin-typescript": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "changeset": "^0.2.6",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.4.1",
+    "rollup": "^2.64.0",
+    "rollup-plugin-dts": "^4.1.0",
+    "tslib": "^2.3.1",
+    "tsm": "^2.2.1",
+    "typescript": "^4.4.3",
+    "uvu": "^0.5.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/saweima12/sveltekit-svxutils"
+  },
+  "type": "module",
+  "license": "MIT",
+  "author": "Saweima <saweima12@gmail.com>",
+  "keywords": [
+    "svelte",
+    "markdown",
+    "mdx",
+    "blog",
+    "kit"
+  ],
+  "peerDependencies": {
+    "mdsvex": ">=0.9.0",
+    "svelte": "^3.46.2",
+    "svelte-check": "^2.3.0",
+    "svelte-preprocess": "^4.10.2"
+  },
+  "dependencies": {
+    "@types/marked": "^4.0.3",
+    "front-matter": "^4.0.2",
+    "marked": "^4.0.14",
+    "svelte": "^3.46.2"
+  }
+}
