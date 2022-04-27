@@ -1,6 +1,7 @@
 {
-  "version": "1.2.12",
-  "description": "Sveltekit markdown provider & classification utilities",
+  "version": "0.0.1",
+  "name": "markedpage",
+  "description": "Markdown source provider & classification utilities",
   "main": "dist/main.cjs",
   "module": "dist/main.mjs",
   "scripts": {
@@ -45,22 +46,13 @@
   "license": "MIT",
   "author": "Saweima <saweima12@gmail.com>",
   "keywords": [
-    "svelte",
     "markdown",
-    "mdx",
     "blog",
-    "kit"
+    "marked"
   ],
-  "peerDependencies": {
-    "mdsvex": ">=0.9.0",
-    "svelte": "^3.46.2",
-    "svelte-check": "^2.3.0",
-    "svelte-preprocess": "^4.10.2"
-  },
   "dependencies": {
     "@types/marked": "^4.0.3",
     "front-matter": "^4.0.2",
     "marked": "^4.0.14",
-    "svelte": "^3.46.2"
   }
 }
