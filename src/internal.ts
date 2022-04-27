@@ -1,7 +1,14 @@
 import fs from 'fs';
 import fm from 'front-matter';
 import path from 'path';
-import { marked } from 'marked'
+import type { SourcePage } from './types'
+
+
+export interface MarkedConfig {
+  options: Record<string, any>,
+  extensions: Array<any>,
+}
+
 
 export const getAbsoultPath = (relativePath: string): string => {
   const cwd = process.cwd();
@@ -13,16 +20,24 @@ export const getRelativePath = (absoultPath: string): string => {
   return path.relative(cwd, absoultPath);
 }
 
-export const parserMd = async (sourcePath: string) => {
+export const extractMeta = async (sourcePath: string) => {
   // loading markdown content.
   const temp = await fs.promises.readFile(sourcePath);
   const content = temp.toString();
   // process fonrtmatter
   const matterObj = fm(content)
-  const html = marked.parse(matterObj.body)
 
   return {
     metadata: matterObj.attributes,
-    body: html
+    path: sourcePath,
   }
-}
+};
+
+export const extractBody = async (sourcePath: string): Promise<string> => {
+  // loading markdown content.
+  const temp = await fs.promises.readFile(sourcePath);
+  const content = temp.toString();
+  const matterObj = fm(content);
+  // return body string.
+  return matterObj.body;
+};

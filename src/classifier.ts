@@ -20,6 +20,7 @@ export interface ClassifyHandle {
   >;
 }
 
+
 export const classifyPages: ClassifyHandle = async (input) => {
   let _classifiedMap: Record<string, any> = {};
   const { classifierList, pages } = input;

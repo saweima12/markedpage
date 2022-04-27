@@ -4,6 +4,10 @@ const config = {
     { id: "post", params: { path: "/posts/" }, type: "directory"  },
     { id: "tag", params: { keys: ["tags"] }, type: "frontmatter" },
   ],
+  marked: {
+    options: {},
+    extensions: [],  
+  }
 }
 
 

@@ -9,11 +9,9 @@ let _config: Record<string, any> = undefined;
  * @async
  * @return {Promise<Record<string, any>>} custom config.
  */
-export const siteConfig = async (): Promise<Record<string, any>> => {
-  
+export const siteConfig = async (): Promise<Record<string, any>> => { 
   if (!_config) {
-    const configPath = "./src/site.config.js";
-    _config = await loadConfig(configPath);
+    _config = await loadConfig();
   }
   return _config;
 };

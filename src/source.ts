@@ -1,22 +1,41 @@
 import fs from 'fs';
 import path from 'path';
-import type { SourcePage, SourcePageContext, SourcePageCollection } from './types';
-import { getAbsoultPath, getRelativePath, parserMd } from './internal';
+import { marked }  from 'marked';
+import { getAbsoultPath, getRelativePath, extractMeta, extractBody } from './internal';
 
-// Get: All Pages by source.
+import type { MarkedConfig } from './internal';
+import type { SourcePage, SourcePageCollection } from './types';
+// Get all pages from sourceDir.
 export const loadSourcePages = async (sourceDir: string): Promise<SourcePageCollection> => {
   return await loadSources(sourceDir);
 };
 
 // Get Config.
 export const loadConfig = async (configPath?: string): Promise<Record<string, any>> => {
-  let path = getAbsoultPath(configPath);
-  let _loadConfig = await import(path);
-  return _loadConfig.default;
+  configPath = configPath ?? "./src/site.config.js";
+  let _path = getAbsoultPath(configPath);
+  
+  const isExist = fs.existsSync(_path);
+  if (isExist) {
+    // is file, import it and loading config.
+    const _loadConfig = await import(_path);
+    const config = _loadConfig.default;
+    
+    if ('marked' in config) {
+      loadMarkedConfig(config.marked);
+    }
+
+    return config;
+
+  } else {
+    // Not a file, or unexists.
+    console.warn("config not found");
+    return {}
+  }
+
 }
 
-
-// loading: All md | svx from /docs/*
+// load: All markdown file from /docs/*
 const loadSources = async (sourceDir: string) => {
   console.log('::: Loading docs ::: ');
   console.log(sourceDir)
@@ -27,7 +46,6 @@ const loadSources = async (sourceDir: string) => {
   let slugMap: Record<string, Array<SourcePage>> = {};
   await Promise.all(
     Object.entries(sources).map(async ([sourcePath, pageAsync]) => {
-      const fullPath = path.join(process.cwd(), sourcePath);
       let pageObj = await pageAsync(); // get page data by lazyloading
       // get file path & created datetime.
       const fStat = await fs.promises.stat(sourcePath);
@@ -52,7 +70,7 @@ const loadSources = async (sourceDir: string) => {
         frontMatter: frontmatter,
         sourcePath: sourcePath,
         indexPath: indexPath,
-        render: pageObj.body,
+        render: () => attachRender(pageObj.path),
         slugKey: slugKey
       };
 
@@ -69,7 +87,7 @@ const loadSources = async (sourceDir: string) => {
 };
 
 
-export const getAvaliableSource = async ( sourceDir: string, filter=['.md'] ) => {  
+const getAvaliableSource = async (sourceDir: string, filter=['.md']) => {  
   // define recursive method.
   const walk = async (sourcePath: string, initialContainer: Object) => {
     let items = await fs.promises.readdir(sourcePath);
@@ -85,17 +103,36 @@ export const getAvaliableSource = async ( sourceDir: string, filter=['.md'] ) =>
       } else if (fstat.isFile()) {
         filter.map( (sname: string) => {
           if (item.includes(sname)) {
-            initialContainer[itemPath] = () => parserMd(fullPath);
+            initialContainer[itemPath] = () => extractMeta(fullPath);
           }
         }); 
       }
     }));
 
     return initialContainer
-  };
-  
+  }; 
   return await walk(sourceDir, {});
 }
+
+
+
+
+// load all markedConfig from config.marked
+const loadMarkedConfig = (config: MarkedConfig) => {
+  if ('options' in config) {
+    marked.setOptions(config.options);
+  }
+  if ('extensions' in config) {
+    Object.values(config.extensions).map(extension => marked.use(extension));
+  }
+}
+
+const attachRender = async (sourcePath: string) => {
+  const pageBody = await extractBody(sourcePath);
+  return marked.parse(pageBody);
+}; 
+
+
 
 const getSlugParams = (indexPath: string) => {
   let baseName = path.basename(indexPath);
