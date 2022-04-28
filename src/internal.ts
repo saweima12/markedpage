@@ -4,19 +4,19 @@ import removeMd from 'remove-markdown';
 import path from 'path';
 
 export interface MarkedConfig {
-  options: Record<string, any>,
-  extensions: Array<any>,
+  options: Record<string, any>;
+  extensions: Array<any>;
 }
 
 export const getAbsoultPath = (relativePath: string): string => {
   const cwd = process.cwd();
   return path.join(cwd, relativePath);
-}
+};
 
 export const getRelativePath = (absoultPath: string): string => {
   const cwd = process.cwd();
   return path.relative(cwd, absoultPath);
-}
+};
 
 export const getSlugParams = (indexPath: string) => {
   let baseName = path.basename(indexPath);
@@ -33,20 +33,19 @@ export const extractMeta = async (sourcePath: string) => {
   const temp = await fs.promises.readFile(sourcePath);
   const content = temp.toString();
   // process fonrtmatter
-  const matterObj = fm(content)
+  const matterObj = fm(content);
   let attributes = matterObj.attributes;
-  
+
   if (typeof attributes['excerpt'] === 'undefined') {
     // if <!-- more --> exists will join it to frontmatter.
     let result = extractExcerpt(matterObj.body);
-    if (result.excerpt != null)
-      attributes["excerpt"] = result.excerpt;
+    if (result.excerpt != null) attributes['excerpt'] = result.excerpt;
   }
 
   return {
     metadata: attributes,
-    path: sourcePath,
-  }
+    path: sourcePath
+  };
 };
 
 export const extractBody = async (sourcePath: string): Promise<string> => {
@@ -60,13 +59,11 @@ export const extractBody = async (sourcePath: string): Promise<string> => {
   return final.body;
 };
 
-export const extractExcerpt = (body: string): { excerpt: string, body: string } => {
-   
+export const extractExcerpt = (body: string): { excerpt: string; body: string } => {
   const rExcerpt = /<!-- ?more ?-->/i;
-  let result = { excerpt: null, body: body }
+  let result = { excerpt: null, body: body };
 
-  if (!rExcerpt.test(body)) 
-    return result;
+  if (!rExcerpt.test(body)) return result;
 
   result.body = body.replace(rExcerpt, (_, index) => {
     let substr = body.substring(0, index).trim();
@@ -75,4 +72,4 @@ export const extractExcerpt = (body: string): { excerpt: string, body: string } 
   });
 
   return result;
-}
+};

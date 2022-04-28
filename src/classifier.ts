@@ -9,9 +9,7 @@ export interface ClassifierOptions<Locals = Record<string, any>> {
 }
 
 export interface ClassifierHandle<Locals = Record<string, any>, Result = Record<string, any>> {
-  (input: { options: ClassifierOptions<Locals>; pages: Array<SourcePage> | any }): Promise<
-    Result
-  >;
+  (input: { options: ClassifierOptions<Locals>; pages: Array<SourcePage> | any }): Promise<Result>;
 }
 
 export interface ClassifyHandle {
@@ -19,7 +17,6 @@ export interface ClassifyHandle {
     Record<string, unknown>
   >;
 }
-
 
 export const classifyPages: ClassifyHandle = async (input) => {
   let _classifiedMap: Record<string, any> = {};

@@ -9,7 +9,7 @@ export default [
     plugins: [
       resolve({ preferBuiltins: true }),
       commonjs(),
-      sucrase({ transforms: ['typescript'] }),
+      sucrase({ transforms: ['typescript'] })
     ],
     input: 'src/main.ts',
     output: [
@@ -25,4 +25,4 @@ export default [
       { file: 'dist/main.cjs.d.ts', format: 'cjs' }
     ]
   }
-]
+];

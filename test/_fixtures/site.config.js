@@ -1,14 +1,13 @@
 const config = {
-  title: "TestWebsite",
-  classifier : [
-    { id: "post", params: { path: "/posts/" }, type: "directory"  },
-    { id: "tag", params: { keys: ["tags"] }, type: "frontmatter" },
+  title: 'TestWebsite',
+  classifier: [
+    { id: 'post', params: { path: '/posts/' }, type: 'directory' },
+    { id: 'tag', params: { keys: ['tags'] }, type: 'frontmatter' }
   ],
   marked: {
     options: {},
-    extensions: [],  
+    extensions: []
   }
-}
-
+};
 
 export default config;

@@ -21,4 +21,3 @@ export interface SourcePageCollection {
   pathMap: Record<string, SourcePage>;
   slugMap: Record<string, Array<SourcePage>>;
 }
-

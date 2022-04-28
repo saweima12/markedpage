@@ -11,7 +11,6 @@ Summary, Nothing to do.
 
 <!-- more -->
 
-
 # 0916 - context
 
 我覺得不行
@@ -19,7 +18,6 @@ Summary, Nothing to do.
 ## Title2
 
 我覺得其實可以
-
 
 <style>
 h1 {

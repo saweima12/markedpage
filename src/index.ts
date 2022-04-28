@@ -4,12 +4,12 @@ import type { SourcePage, SourcePageContext, SourcePageCollection } from './type
 
 let _config: Record<string, any> = undefined;
 /**
- * Get siteConfig 
- * 
+ * Get siteConfig
+ *
  * @async
  * @return {Promise<Record<string, any>>} custom config.
  */
-export const siteConfig = async (): Promise<Record<string, any>> => { 
+export const siteConfig = async (): Promise<Record<string, any>> => {
   if (!_config) {
     _config = await loadConfig();
   }
@@ -76,9 +76,7 @@ export const getPage = async (
   let slugPages = _slugMap[indexKey];
 
   if (slugPages) {
-    return slugMatchFunc 
-      ? slugPages.find((page) => slugMatchFunc(page))
-      : slugPages[0];
+    return slugMatchFunc ? slugPages.find((page) => slugMatchFunc(page)) : slugPages[0];
   }
   // try get page from pageMap
   const _pathMap = await pathMap();
@@ -90,13 +88,11 @@ export const getPage = async (
   throw new Error(`path ${indexKey} is not found. available path:\r\t${avaliablePath} \n`);
 };
 
-
 export const initializeMap = async () => {
-  const sourceDir = "./docs";
+  const sourceDir = './docs';
   await siteConfig();
   _pageMap = await loadSourcePages(sourceDir);
 };
 
 export type { DirectoryClassifierResult, FrontMatterClassifierResult } from './classifier';
 export type { SourcePage, SourcePageContext };
-
