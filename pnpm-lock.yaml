@@ -7,6 +7,7 @@ specifiers:
   '@rollup/plugin-sucrase': ^4.0.2
   '@rollup/plugin-typescript': ^8.3.0
   '@types/marked': ^4.0.3
+  '@types/remove-markdown': ^0.3.1
   '@typescript-eslint/eslint-plugin': ^4.31.1
   '@typescript-eslint/parser': ^4.31.1
   changeset: ^0.2.6
@@ -15,9 +16,9 @@ specifiers:
   front-matter: ^4.0.2
   marked: ^4.0.14
   prettier: ^2.4.1
+  remove-markdown: ^0.5.0
   rollup: ^2.64.0
   rollup-plugin-dts: ^4.1.0
-  svelte: ^3.46.2
   tslib: ^2.3.1
   tsm: ^2.2.1
   typescript: ^4.4.3
@@ -27,7 +28,7 @@ dependencies:
   '@types/marked': 4.0.3
   front-matter: 4.0.2
   marked: 4.0.14
-  svelte: 3.46.2
+  remove-markdown: 0.5.0
 
 devDependencies:
   '@rollup/plugin-commonjs': 21.0.1_rollup@2.64.0
@@ -35,6 +36,7 @@ devDependencies:
   '@rollup/plugin-node-resolve': 13.1.3_rollup@2.64.0
   '@rollup/plugin-sucrase': 4.0.2_rollup@2.64.0
   '@rollup/plugin-typescript': 8.3.0_64ff3dff6a25fac14300170f89831284
+  '@types/remove-markdown': 0.3.1
   '@typescript-eslint/eslint-plugin': 4.32.0_1eacf2495a01e8a68ffa99482308e8ec
   '@typescript-eslint/parser': 4.32.0_eslint@7.32.0+typescript@4.4.3
   changeset: 0.2.6
@@ -242,6 +244,10 @@ packages:
 
   /@types/node/17.0.10:
     resolution: {integrity: sha512-S/3xB4KzyFxYGCppyDt68yzBU9ysL88lSdIah4D6cptdcltc4NCPCAMc0+PCpg/lLIyC7IPvj2Z52OJWeIUkog==}
+    dev: true
+
+  /@types/remove-markdown/0.3.1:
+    resolution: {integrity: sha512-JpJNEJEsmmltyL2LdE8KRjJ0L2ad5vgLibqNj85clohT9AyTrfN6jvHxStPshDkmtcL/ShFu0p2tbY7DBS1mqQ==}
     dev: true
 
   /@types/resolve/1.17.1:
@@ -1327,6 +1333,10 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /remove-markdown/0.5.0:
+    resolution: {integrity: sha512-x917M80K97K5IN1L8lUvFehsfhR8cYjGQ/yAMRI9E7JIKivtl5Emo5iD13DhMr+VojzMCiYk8V2byNPwT/oapg==}
+    dev: false
+
   /require-from-string/2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
@@ -1486,11 +1496,6 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
     dev: true
-
-  /svelte/3.46.2:
-    resolution: {integrity: sha512-RXSAtYNefe01Sb1lXtZ2I+gzn3t/h/59hoaRNeRrm8IkMIu6BSiAkbpi41xb+C44x54YKnbk9+dtfs3pM4hECA==}
-    engines: {node: '>= 8'}
-    dev: false
 
   /table/6.7.1:
     resolution: {integrity: sha512-ZGum47Yi6KOOFDE8m223td53ath2enHcYLgOCjGr5ngu8bdIARQk6mN/wRMv4yMRcHnCSnHbCEha4sobQx5yWg==}
