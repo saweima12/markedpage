@@ -42,7 +42,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/saweima12/sveltekit-svxutils"
+    "url": "https://github.com/saweima12/markedpage"
   },
   "type": "module",
   "license": "MIT",
