@@ -1,10 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import { marked }  from 'marked';
-import { getAbsoultPath, getRelativePath, extractMeta, extractBody } from './internal';
+import { getAbsoultPath, getRelativePath, getSlugParams, extractMeta, extractBody } from './internal';
 
 import type { MarkedConfig } from './internal';
 import type { SourcePage, SourcePageCollection } from './types';
+
 // Get all pages from sourceDir.
 export const loadSourcePages = async (sourceDir: string): Promise<SourcePageCollection> => {
   return await loadSources(sourceDir);
@@ -32,13 +33,11 @@ export const loadConfig = async (configPath?: string): Promise<Record<string, an
     console.warn("config not found");
     return {}
   }
-
 }
 
 // load: All markdown file from /docs/*
 const loadSources = async (sourceDir: string) => {
   console.log('::: Loading docs ::: ');
-  console.log(sourceDir)
   const relativeDirPath = getRelativePath(sourceDir)
   // loading source by vite & fast-glob.
   let sources = await getAvaliableSource(relativeDirPath);
@@ -54,11 +53,10 @@ const loadSources = async (sourceDir: string) => {
       const ptn = new RegExp(`^${sourceDir}`);
       let indexPath = sourcePath.replace(ptn, '').replace(/(?:\.([^.]+))?$/, '');
       indexPath = frontmatter.indexPath ? frontmatter.indexPath : indexPath;
-      // process slugPath.
+      // process slugPath & slugMap.
       let { slugKey, slugDate } = getSlugParams(indexPath);
-      // if scheme like: 2021-09-30-foo-bar, extract slug.
       if (!(slugKey in slugMap)) slugMap[slugKey] = [];
-      // attach created datetime & get indexPath.
+      // attach created datetime.
       frontmatter.created = frontmatter.created
         ? frontmatter.created
         : slugDate
@@ -114,9 +112,6 @@ const getAvaliableSource = async (sourceDir: string, filter=['.md']) => {
   return await walk(sourceDir, {});
 }
 
-
-
-
 // load all markedConfig from config.marked
 const loadMarkedConfig = (config: MarkedConfig) => {
   if ('options' in config) {
@@ -131,16 +126,4 @@ const attachRender = async (sourcePath: string) => {
   const pageBody = await extractBody(sourcePath);
   return marked.parse(pageBody);
 }; 
-
-
-
-const getSlugParams = (indexPath: string) => {
-  let baseName = path.basename(indexPath);
-  // match slug params
-  const regex = /([0-9]{4}\-[0-9]{1,2}\-[0-9]{1,2})\-(.+)/;
-  let match = baseName.match(regex);
-
-  if (match) return { slugKey: match[2], slugDate: new Date(match[1]) };
-  return { slugKey: baseName, slugDate: undefined };
-};
 

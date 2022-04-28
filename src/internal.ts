@@ -1,14 +1,12 @@
 import fs from 'fs';
 import fm from 'front-matter';
+import removeMd from 'remove-markdown';
 import path from 'path';
-import type { SourcePage } from './types'
-
 
 export interface MarkedConfig {
   options: Record<string, any>,
   extensions: Array<any>,
 }
-
 
 export const getAbsoultPath = (relativePath: string): string => {
   const cwd = process.cwd();
@@ -20,15 +18,33 @@ export const getRelativePath = (absoultPath: string): string => {
   return path.relative(cwd, absoultPath);
 }
 
+export const getSlugParams = (indexPath: string) => {
+  let baseName = path.basename(indexPath);
+  // match slug params
+  const regex = /([0-9]{4}\-[0-9]{1,2}\-[0-9]{1,2})\-(.+)/;
+  let match = baseName.match(regex);
+
+  if (match) return { slugKey: match[2], slugDate: new Date(match[1]) };
+  return { slugKey: baseName, slugDate: undefined };
+};
+
 export const extractMeta = async (sourcePath: string) => {
   // loading markdown content.
   const temp = await fs.promises.readFile(sourcePath);
   const content = temp.toString();
   // process fonrtmatter
   const matterObj = fm(content)
+  let attributes = matterObj.attributes;
+  
+  if (typeof attributes['excerpt'] === 'undefined') {
+    // if <!-- more --> exists will join it to frontmatter.
+    let result = extractExcerpt(matterObj.body);
+    if (result.excerpt != null)
+      attributes["excerpt"] = result.excerpt;
+  }
 
   return {
-    metadata: matterObj.attributes,
+    metadata: attributes,
     path: sourcePath,
   }
 };
@@ -38,6 +54,25 @@ export const extractBody = async (sourcePath: string): Promise<string> => {
   const temp = await fs.promises.readFile(sourcePath);
   const content = temp.toString();
   const matterObj = fm(content);
+
+  let final = extractExcerpt(matterObj.body);
   // return body string.
-  return matterObj.body;
+  return final.body;
 };
+
+export const extractExcerpt = (body: string): { excerpt: string, body: string } => {
+   
+  const rExcerpt = /<!-- ?more ?-->/i;
+  let result = { excerpt: null, body: body }
+
+  if (!rExcerpt.test(body)) 
+    return result;
+
+  result.body = body.replace(rExcerpt, (_, index) => {
+    let substr = body.substring(0, index).trim();
+    result.excerpt = removeMd(substr);
+    return ``;
+  });
+
+  return result;
+}
