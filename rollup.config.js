@@ -21,8 +21,7 @@ export default [
     plugins: [dts()],
     input: 'src/main.ts',
     output: [
-      { file: 'dist/main.mjs.d.ts', format: 'es' },
-      // { file: 'dist/main.cjs.d.ts', format: 'cjs' }
+      { file: 'dist/index.d.ts', format: 'es' }
     ]
   }
 ];

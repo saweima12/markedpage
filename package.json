@@ -1,9 +1,9 @@
 {
-  "version": "0.0.3",
+  "version": "0.0.4",
   "name": "markedpage",
   "description": "Markdown source provider & classification utilities",
-  "main": "dist/main.cjs",
-  "module": "dist/main.mjs",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "scripts": {
     "build": "rollup -c",
     "test": "uvu -r tsm test test.ts$",
@@ -15,11 +15,9 @@
     "dist/*"
   ],
   "exports": {
-    ".": {
-      "import": "./dist/main.mjs",
-      "require": "./dist/main.cjs",
-      "types": "./dist/main.mjs.d.ts"
-    }
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.cjs",
+    "types": "./dist/index.mjs.d.ts"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.0.1",
@@ -27,8 +25,8 @@
     "@rollup/plugin-node-resolve": "^13.1.3",
     "@rollup/plugin-sucrase": "^4.0.2",
     "@rollup/plugin-typescript": "^8.3.0",
-    "@types/remove-markdown": "^0.3.1",
     "@types/marked": "^4.0.3",
+    "@types/remove-markdown": "^0.3.1",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "changeset": "^0.2.6",
