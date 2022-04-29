@@ -66,6 +66,12 @@ export const classifiedSet = async (classifierId: string): Promise<any> => {
   throw new Error(`classifierId: ${classifierId} not found.`);
 };
 
+/**
+ * Get page by key.
+ * @param indexKey  SlugKey | indexPath
+ * @param slugMatchFunc 
+ * @returns 
+ */
 export const getPage = async (
   indexKey: string,
   slugMatchFunc?: (page: SourcePage) => boolean
