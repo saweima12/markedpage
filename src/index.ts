@@ -1,6 +1,6 @@
 import { loadConfig, loadSourcePages } from './source';
 import { classifyPages } from './classifier';
-import type { SourcePage, SourcePageContext, SourcePageCollection } from './types';
+import type { SourcePage, SourcePageCollection } from './types';
 
 let _config: Record<string, any> = undefined;
 /**
@@ -95,4 +95,4 @@ export const initializeMap = async () => {
 };
 
 export type { DirectoryClassifierResult, FrontMatterClassifierResult } from './classifier';
-export type { SourcePage, SourcePageContext };
+export type { SourcePage };

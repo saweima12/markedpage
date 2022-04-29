@@ -10,13 +10,6 @@ export interface SourcePage extends Record<string, any> {
   slugKey: string;
 }
 
-export interface SourcePageContext extends Record<string, any> {
-  html?: string;
-  header?: string;
-  css?: Record<string, any>;
-  style: string;
-}
-
 export interface SourcePageCollection {
   pathMap: Record<string, SourcePage>;
   slugMap: Record<string, Array<SourcePage>>;

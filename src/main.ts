@@ -4,4 +4,4 @@ export type {
   FrontMatterClassifierResult,
   ClassifierHandle
 } from './classifier';
-export type { SourcePage, SourcePageContext, SourcePageCollection } from './types';
+export type { SourcePage, SourcePageCollection } from './types';
