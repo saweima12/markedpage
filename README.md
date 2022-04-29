@@ -20,11 +20,12 @@ const config = {
 
 export default config;
 ```
-2. Create **./docs** and put markdown files in it.
+2. Create **./docs/_posts/2022-04-28-post1.md** and put markdown files in it.
 ```
 root
 |_docs
-    |_2022-04-28-post.md
+  |_posts
+    |_2022-04-28-post1.md
 ```
 
 3. Use **getPage** or **classifiedSet** to get page context or page list in endpoints.
