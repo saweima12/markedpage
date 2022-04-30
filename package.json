@@ -2,7 +2,6 @@
   "version": "0.0.6",
   "name": "markedpage",
   "description": "Markdown source provider & classification utilities",
-  "main": "dist/index.js",
   "module": "dist/index.mjs",
   "scripts": {
     "build": "rollup -c",
@@ -16,7 +15,6 @@
   ],
   "exports": {
     "import": "./dist/index.mjs",
-    "require": "./dist/index.cjs",
     "types": "./dist/index.mjs.d.ts"
   },
   "devDependencies": {
@@ -49,8 +47,9 @@
   "author": "Saweima <saweima12@gmail.com>",
   "keywords": [
     "markdown",
+    "marked",
     "blog",
-    "marked"
+    "svelte"
   ],
   "dependencies": {
     "front-matter": "^4.0.2",
