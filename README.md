@@ -1,8 +1,15 @@
 # MarkedPage
 
-A Markdown provider for my svelte blog.
+A Markdown provider for my sveltekit static blog.
 
-## How to use
+## Features
+
+- Markdown source provide
+- Customize Classification
+- Support `<!-- more -->` tag, it will add excerpt into frontmatter
+- Use marked to parse markdown context.
+
+## Usage 
 
 1. Create **./src/site.config.js** to configure setting.  
 ```js
@@ -50,5 +57,39 @@ export const get : RequestHandler = async () => {
       body: context
     }
   }
+}
+```
+
+## Example
+
+```md
+<!-- 2022-04-28-firstpage.md -->
+---
+title: FirstPost
+tags:
+  - test
+---
+
+This is summary field.
+
+<!-- more -->
+
+This is context block.
+```
+
+It will be passed to 
+
+```
+{
+  frontMatter: {
+    title: 'FirstPost',
+    tags: [ 'test' ],
+    excerpt: 'This is summary field.',
+    created: 2022-04-28T00:00:00.000Z
+  },
+  sourcePath: 'docs/2022-04-28-firstpage.md',
+  indexPath: 'docs/2022-04-28-firstpage',
+  render: [Function: render],
+  slugKey: 'firstpage'
 }
 ```
