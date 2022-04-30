@@ -1,5 +1,5 @@
 {
-  "version": "0.0.6",
+  "version": "0.0.7",
   "name": "markedpage",
   "description": "Markdown source provider & classification utilities",
   "module": "dist/index.mjs",
