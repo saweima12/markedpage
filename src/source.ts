@@ -75,6 +75,7 @@ const loadSources = async (sourceDir: string) => {
         indexPath: indexPath,
         headings: pageObj.headings,
         render: () => attachRender(pageObj.path),
+        raw: () => extractBody(sourcePath),
         slugKey: slugKey
       };
 

@@ -7,7 +7,8 @@ export interface SourcePage extends Record<string, any> {
   sourcePath: PathLike | string;
   indexPath: PathLike | string;
   headings: Array<HeadingItem>;
-  render: (() => Record<string, any>) | any;
+  render: (() => Promise<string>) | any;
+  raw: (() => Promise<string>);
   slugKey: string;
 }
 
