@@ -73,6 +73,7 @@ const loadSources = async (sourceDir: string) => {
         frontMatter: frontmatter,
         sourcePath: sourcePath,
         indexPath: indexPath,
+        headings: pageObj.headings,
         render: () => attachRender(pageObj.path),
         slugKey: slugKey
       };

@@ -3,6 +3,9 @@ import fm from 'front-matter';
 import removeMd from 'remove-markdown';
 import path from 'path';
 
+import type { HeadingItem } from './types';
+import { marked } from 'marked';
+
 export interface MarkedConfig {
   options: Record<string, any>;
   extensions: Array<any>;
@@ -42,9 +45,12 @@ export const extractMeta = async (sourcePath: string) => {
     if (result.excerpt != null) attributes['excerpt'] = result.excerpt;
   }
 
+  let headings = extractHeading(matterObj.body);
+
   return {
     metadata: attributes,
-    path: sourcePath
+    path: sourcePath,
+    headings: headings
   };
 };
 
@@ -73,3 +79,13 @@ export const extractExcerpt = (body: string): { excerpt: string; body: string } 
 
   return result;
 };
+
+export const extractHeading = (body:string): Array<HeadingItem> => {
+  const tree = marked.lexer(body);
+  const result = []
+  tree.map(node => {
+    if (node.type == "heading")
+      result.push({ depth: node.depth, text: node.text, raw: node.raw});
+  });
+  return result;
+}
