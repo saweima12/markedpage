@@ -84,8 +84,25 @@ export const extractHeading = (body:string): Array<HeadingItem> => {
   const tree = marked.lexer(body);
   const result = []
   tree.map(node => {
-    if (node.type == "heading")
-      result.push({ depth: node.depth, text: node.text, raw: node.raw});
+    if (node.type == "heading"){
+      result.push({ 
+        depth: node.depth, 
+        text: node.text, 
+        raw: node.raw,
+        id: serialize(node.text)
+      });
+    }
   });
   return result;
+}
+
+const serialize = (value: string) => {
+  return value
+    .toLowerCase()
+    .trim()
+    // remove html tags
+    .replace(/<[!\/a-z].*?>/ig, '')
+    // remove unwanted chars
+    .replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
+    .replace(/\s/g, '-');
 }

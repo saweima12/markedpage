@@ -61,7 +61,7 @@ marked('loadPage function should be work.', async () => {
   let page = rtn.slugMap['directorypost1'][0];
   const context = await page.render();
 
-  console.log(context);
+  console.log(page.headings);
 
   if (_DEBUG) {
     console.log('\nPage Render:', await page.render());
