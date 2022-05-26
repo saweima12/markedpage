@@ -66,7 +66,7 @@ export const extractBody = async (sourcePath: string): Promise<string> => {
 };
 
 export const extractExcerpt = (body: string): { excerpt: string; body: string } => {
-  const rExcerpt = /^<!-- ?more ?-->$/i;
+  const rExcerpt = /.{0}<!-- ?more ?-->/i;
   let result = { excerpt: null, body: body };
 
   if (!rExcerpt.test(body)) return result;
