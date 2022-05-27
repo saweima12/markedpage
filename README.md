@@ -94,3 +94,7 @@ It will be passed to
   slugKey: 'firstpage'
 }
 ```
+
+## ChangeLog
+
+2022-05-27 Add extendPageData support
