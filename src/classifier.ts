@@ -1,12 +1,8 @@
-import type { SourcePage } from './types';
+import type { 
+  SourcePage,
+  ClassifierOptions
+} from './types';
 
-type ClassifierType = 'directory' | 'frontmatter' | ClassifierHandle;
-
-export interface ClassifierOptions<Locals = Record<string, any>> {
-  id: string;
-  type: ClassifierType;
-  params: Locals;
-}
 
 export interface ClassifierHandle<Locals = Record<string, any>, Result = Record<string, any>> {
   (input: { options: ClassifierOptions<Locals>; pages: Array<SourcePage> | any }): Promise<Result>;

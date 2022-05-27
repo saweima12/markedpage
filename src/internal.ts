@@ -6,10 +6,6 @@ import path from 'path';
 import type { HeadingItem } from './types';
 import { marked } from 'marked';
 
-export interface MarkedConfig {
-  options: Record<string, any>;
-  extensions: Array<any>;
-}
 
 export const getAbsoultPath = (relativePath: string): string => {
   const cwd = process.cwd();
@@ -31,10 +27,11 @@ export const getSlugParams = (indexPath: string) => {
   return { slugKey: baseName, slugDate: undefined };
 };
 
-export const extractMeta = async (sourcePath: string) => {
+export const getPageAttribute = async (sourcePath: string) => {
   // loading markdown content.
   const temp = await fs.promises.readFile(sourcePath);
   const content = temp.toString();
+  
   // process fonrtmatter
   const matterObj = fm(content);
   let attributes = matterObj.attributes;
@@ -89,14 +86,14 @@ export const extractHeading = (body:string): Array<HeadingItem> => {
         depth: node.depth, 
         text: node.text, 
         raw: node.raw,
-        id: serialize(node.text)
+        id: serializeId(node.text)
       });
     }
   });
   return result;
 }
 
-const serialize = (value: string) => {
+const serializeId = (value: string) => {
   return value
     .toLowerCase()
     .trim()
