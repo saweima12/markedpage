@@ -13,6 +13,7 @@ const marked = suite('marked');
 const _fixtures = join(__dirname, '_fixtures');
 
 marked('it should be get project absoult path', async () => {
+
   const output = `${process.cwd()}/test`;
   const rtn = getAbsoultPath('/test');
   assert.type(rtn, 'string');
@@ -45,8 +46,13 @@ marked('loadConfig() function should be return site.config.js', async () => {
 });
 
 marked('loadSourcePages() function should be work.', async () => {
+  // define test path
   const relative_path = getRelativePath(join(_fixtures, '/docs'));
-  const rtn = await loadSourcePages(relative_path);
+
+  const config_relative_path = getRelativePath(join(_fixtures, 'site.config.js'));
+  const config = await loadConfig(config_relative_path);
+  
+  const rtn = await loadSourcePages(config, relative_path);
 
   if (_DEBUG) {
     console.log('Map:', rtn);
@@ -55,13 +61,18 @@ marked('loadSourcePages() function should be work.', async () => {
 });
 
 marked('loadPage function should be work.', async () => {
+  // define test path
   const relative_path = getRelativePath(join(_fixtures, '/docs'));
-  const rtn = await loadSourcePages(relative_path);
+
+  const config_relative_path = getRelativePath(join(_fixtures, 'site.config.js'));
+  const config = await loadConfig(config_relative_path);
+
+  const rtn = await loadSourcePages(config, relative_path);
 
   let page = rtn.slugMap['directorypost1'][0];
   const context = await page.render();
 
-  console.log(page.headings);
+  // console.log(context);
 
   if (_DEBUG) {
     console.log('\nPage Render:', await page.render());
