@@ -8,7 +8,7 @@ export interface SourcePage extends Record<string, any> {
   indexPath: PathLike | string;
   headings: Array<HeadingItem>;
   render: (() => Promise<string>) | any;
-  raw: (() => Promise<string>);
+  raw: () => Promise<string>;
   slugKey: string;
 }
 
@@ -28,10 +28,11 @@ export interface MarkedConfig {
   extensions: Array<any>;
 }
 
-export interface HeadingItem extends Record<string, any>{
+export interface HeadingItem extends Record<string, any> {
   depth: number;
   text: string;
   raw: string;
+  id: string;
 }
 
 export type ClassifierType = 'directory' | 'frontmatter' | ClassifierHandle;
@@ -42,10 +43,7 @@ export interface ClassifierOptions<Locals = Record<string, any>> {
   params: Locals;
 }
 
-
 export interface ClassifierItem extends Record<string, any> {
   id: string;
   params: string;
 }
-
-

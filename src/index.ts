@@ -69,8 +69,8 @@ export const classifiedSet = async (classifierId: string): Promise<any> => {
 /**
  * Get page by key.
  * @param indexKey  SlugKey | indexPath
- * @param slugMatchFunc 
- * @returns 
+ * @param slugMatchFunc
+ * @returns
  */
 export const getPage = async (
   indexKey: string,
@@ -99,7 +99,6 @@ export const initializeMap = async () => {
   // initialize projectMap
   let config = await siteConfig();
   _pageMap = await loadSourcePages(config, sourceDir);
-
 };
 
 export type { DirectoryClassifierResult, FrontMatterClassifierResult } from './classifier';

@@ -9,12 +9,7 @@ import {
   extractBody
 } from './internal';
 
-import type { 
-  SourcePage, 
-  SourcePageCollection, 
-  SiteConfigDefault, 
-  MarkedConfig 
-} from './types';
+import type { SourcePage, SourcePageCollection, SiteConfigDefault, MarkedConfig } from './types';
 
 // Get Config.
 export const loadConfig = async (configPath?: string): Promise<SiteConfigDefault> => {
@@ -39,7 +34,10 @@ export const loadConfig = async (configPath?: string): Promise<SiteConfigDefault
 };
 
 // Get all pages from sourceDir.
-export const loadSourcePages = async (config: Record<string, any>, sourceDir: string): Promise<SourcePageCollection> => {
+export const loadSourcePages = async (
+  config: Record<string, any>,
+  sourceDir: string
+): Promise<SourcePageCollection> => {
   return await loadSources(config, sourceDir);
 };
 
@@ -111,7 +109,7 @@ const getAvaliableSource = async (sourceDir: string, filter = ['.md']) => {
         // process file path.
         const itemPath = path.join(sourcePath, item);
         const fullPath = getAbsoultPath(itemPath);
-        
+
         const fstat = await fs.promises.stat(fullPath);
         if (fstat.isDirectory()) {
           initialContainer = await walk(itemPath, initialContainer);

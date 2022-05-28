@@ -1,8 +1,4 @@
-import type { 
-  SourcePage,
-  ClassifierOptions
-} from './types';
-
+import type { SourcePage, ClassifierOptions } from './types';
 
 export interface ClassifierHandle<Locals = Record<string, any>, Result = Record<string, any>> {
   (input: { options: ClassifierOptions<Locals>; pages: Array<SourcePage> | any }): Promise<Result>;

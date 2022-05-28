@@ -13,7 +13,6 @@ const marked = suite('marked');
 const _fixtures = join(__dirname, '_fixtures');
 
 marked('it should be get project absoult path', async () => {
-
   const output = `${process.cwd()}/test`;
   const rtn = getAbsoultPath('/test');
   assert.type(rtn, 'string');
@@ -51,7 +50,7 @@ marked('loadSourcePages() function should be work.', async () => {
 
   const config_relative_path = getRelativePath(join(_fixtures, 'site.config.js'));
   const config = await loadConfig(config_relative_path);
-  
+
   const rtn = await loadSourcePages(config, relative_path);
 
   if (_DEBUG) {

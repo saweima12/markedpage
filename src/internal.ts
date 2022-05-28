@@ -6,7 +6,6 @@ import path from 'path';
 import type { HeadingItem } from './types';
 import { marked } from 'marked';
 
-
 export const getAbsoultPath = (relativePath: string): string => {
   const cwd = process.cwd();
   return path.join(cwd, relativePath);
@@ -31,7 +30,7 @@ export const getPageAttribute = async (sourcePath: string) => {
   // loading markdown content.
   const temp = await fs.promises.readFile(sourcePath);
   const content = temp.toString();
-  
+
   // process fonrtmatter
   const matterObj = fm(content);
   let attributes = matterObj.attributes;
@@ -77,29 +76,31 @@ export const extractExcerpt = (body: string): { excerpt: string; body: string } 
   return result;
 };
 
-export const extractHeading = (body:string): Array<HeadingItem> => {
+export const extractHeading = (body: string): Array<HeadingItem> => {
   const tree = marked.lexer(body);
-  const result = []
-  tree.map(node => {
-    if (node.type == "heading"){
-      result.push({ 
-        depth: node.depth, 
-        text: node.text, 
+  const result = [];
+  tree.map((node) => {
+    if (node.type == 'heading') {
+      result.push({
+        depth: node.depth,
+        text: node.text,
         raw: node.raw,
         id: serializeId(node.text)
       });
     }
   });
   return result;
-}
+};
 
 const serializeId = (value: string) => {
-  return value
-    .toLowerCase()
-    .trim()
-    // remove html tags
-    .replace(/<[!\/a-z].*?>/ig, '')
-    // remove unwanted chars
-    .replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
-    .replace(/\s/g, '-');
-}
+  return (
+    value
+      .toLowerCase()
+      .trim()
+      // remove html tags
+      .replace(/<[!\/a-z].*?>/gi, '')
+      // remove unwanted chars
+      .replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
+      .replace(/\s/g, '-')
+  );
+};

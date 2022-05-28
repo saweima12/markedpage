@@ -4,7 +4,9 @@ const config = {
     { id: 'post', params: { path: '/posts/' }, type: 'directory' },
     { id: 'tag', params: { keys: ['tags'] }, type: 'frontmatter' }
   ],
-  extendPageData: (page) => {console.log(page);},
+  extendPageData: (page) => {
+    console.log(page);
+  },
   marked: {
     options: {},
     extensions: []

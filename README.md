@@ -9,12 +9,13 @@ A Markdown provider for my sveltekit static blog.
 - Support `<!-- more -->` tag, it will add excerpt into frontmatter
 - Use marked to parse markdown context.
 
-## Usage 
+## Usage
 
-1. Create **./src/site.config.js** to configure setting.  
+1. Create **./src/site.config.js** to configure setting.
+
 ```js
 const config = {
-  title: "TestWebSite",
+  title: 'TestWebSite',
   classifier: [
     { id: 'post', params: { path: '/_posts/' }, type: 'directory' },
     { id: 'tag', params: { keys: ['tag', 'tags'] }, type: 'frontmatter' }
@@ -22,12 +23,14 @@ const config = {
   marked: {
     options: {},
     extensions: {}
-  },
+  }
 };
 
 export default config;
 ```
-2. Create **./docs/_posts/2022-04-28-post1.md** and put markdown files in it.
+
+2. Create **./docs/\_posts/2022-04-28-post1.md** and put markdown files in it.
+
 ```
 root
 |_docs
@@ -36,15 +39,16 @@ root
 ```
 
 3. Use **getPage** or **classifiedSet** to get page context or page list in endpoints.
+
 ```js
 // example.ts
 import type { DirectoryClassifierResult } from 'markedpage';
 import { getPage, classifiedSet } from 'markedpage';
 import type { RequestHandler } from '@sveltejs/kit';
 
-export const get : RequestHandler = async () => {
+export const get: RequestHandler = async () => {
   // Get list.
-  const pageSet: DirectoryClassifierResult = await classifiedSet("post");
+  const pageSet: DirectoryClassifierResult = await classifiedSet('post');
   const pages = pageSet.pages;
   // Get page.
   const page = await getPage('post1');
@@ -56,18 +60,20 @@ export const get : RequestHandler = async () => {
       metadata: page.frontMatter,
       body: context
     }
-  }
-}
+  };
+};
 ```
 
 ## Example
 
 ```md
-<!-- 2022-04-28-firstpage.md -->
----
+## <!-- 2022-04-28-firstpage.md -->
+
 title: FirstPost
 tags:
-  - test
+
+- test
+
 ---
 
 This is summary field.
@@ -77,7 +83,7 @@ This is summary field.
 This is context block.
 ```
 
-It will be passed to 
+It will be passed to
 
 ```
 {
