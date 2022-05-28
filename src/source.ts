@@ -5,63 +5,70 @@ import {
   getAbsoultPath,
   getRelativePath,
   getSlugParams,
-  extractMeta,
+  getPageAttribute,
   extractBody
 } from './internal';
 
-import type { MarkedConfig } from './internal';
-import type { SourcePage, SourcePageCollection } from './types';
-
-// Get all pages from sourceDir.
-export const loadSourcePages = async (sourceDir: string): Promise<SourcePageCollection> => {
-  return await loadSources(sourceDir);
-};
+import type { 
+  SourcePage, 
+  SourcePageCollection, 
+  SiteConfigDefault, 
+  MarkedConfig 
+} from './types';
 
 // Get Config.
-export const loadConfig = async (configPath?: string): Promise<Record<string, any>> => {
+export const loadConfig = async (configPath?: string): Promise<SiteConfigDefault> => {
   configPath = configPath ?? './src/site.config.js';
   let _path = getAbsoultPath(configPath);
 
   const isExist = fs.existsSync(_path);
-  if (isExist) {
-    // is file, import it and loading config.
-    const _loadConfig = await import(_path);
-    const config = _loadConfig.default;
-
-    if ('marked' in config) {
-      loadMarkedConfig(config.marked);
-    }
-
-    return config;
-  } else {
+  if (!isExist) {
     // Not a file, or unexists.
     console.warn('config not found');
     return {};
   }
+
+  // is file, import it and loading config.
+  const _loadConfig = await import(_path);
+  const config = _loadConfig.default;
+
+  if ('marked' in config) {
+    loadMarkedConfig(config.marked);
+  }
+  return config;
+};
+
+// Get all pages from sourceDir.
+export const loadSourcePages = async (config: Record<string, any>, sourceDir: string): Promise<SourcePageCollection> => {
+  return await loadSources(config, sourceDir);
 };
 
 // load: All markdown file from /docs/*
-const loadSources = async (sourceDir: string) => {
+const loadSources = async (config: SiteConfigDefault, sourceDir: string) => {
   console.log('::: Loading docs ::: ');
   const relativeDirPath = getRelativePath(sourceDir);
   // loading source by vite & fast-glob.
   let sources = await getAvaliableSource(relativeDirPath);
   let pathMap: Record<string, SourcePage> = {};
   let slugMap: Record<string, Array<SourcePage>> = {};
+
+  const ptn = new RegExp(`^${sourceDir}`);
+  // traversal all markdown page.
   await Promise.all(
     Object.entries(sources).map(async ([sourcePath, pageAsync]) => {
-      let pageObj = await pageAsync(); // get page data by lazyloading
-      // get file path & created datetime.
-      const fStat = await fs.promises.stat(sourcePath);
+      let pageObj = await pageAsync(); // get page's metadata;
       let frontmatter = pageObj.metadata || {};
+
       // process indexPath & support customize indexPath by frontmatter.
-      const ptn = new RegExp(`^${sourceDir}`);
       let indexPath = sourcePath.replace(ptn, '').replace(/(?:\.([^.]+))?$/, '');
       indexPath = frontmatter.indexPath ? frontmatter.indexPath : indexPath;
+
       // process slugPath & slugMap.
       let { slugKey, slugDate } = getSlugParams(indexPath);
       if (!(slugKey in slugMap)) slugMap[slugKey] = [];
-      // attach created datetime.
+
+      // get file path & created datetime.
+      const fStat = await fs.promises.stat(sourcePath);
       frontmatter.created = frontmatter.created
         ? frontmatter.created
         : slugDate
@@ -79,6 +86,10 @@ const loadSources = async (sourceDir: string) => {
         slugKey: slugKey
       };
 
+      if ('extendPageData' in config) {
+        await config.extendPageData(pageStruct);
+      }
+
       // add to pathMap & slugMap
       pathMap[indexPath] = pageStruct;
       slugMap[slugKey].push(pageStruct);
@@ -92,28 +103,27 @@ const loadSources = async (sourceDir: string) => {
 };
 
 const getAvaliableSource = async (sourceDir: string, filter = ['.md']) => {
-  // define recursive method.
+  // define recursive method to traversal all .md file under /docs.
   const walk = async (sourcePath: string, initialContainer: Object) => {
     let items = await fs.promises.readdir(sourcePath);
-
     await Promise.all(
       items.map(async (item: string) => {
+        // process file path.
         const itemPath = path.join(sourcePath, item);
         const fullPath = getAbsoultPath(itemPath);
-
+        
         const fstat = await fs.promises.stat(fullPath);
         if (fstat.isDirectory()) {
           initialContainer = await walk(itemPath, initialContainer);
         } else if (fstat.isFile()) {
           filter.map((sname: string) => {
             if (item.includes(sname)) {
-              initialContainer[itemPath] = () => extractMeta(fullPath);
+              initialContainer[itemPath] = () => getPageAttribute(fullPath);
             }
           });
         }
       })
     );
-
     return initialContainer;
   };
   return await walk(sourceDir, {});

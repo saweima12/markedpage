@@ -96,8 +96,10 @@ export const getPage = async (
 
 export const initializeMap = async () => {
   const sourceDir = './docs';
-  await siteConfig();
-  _pageMap = await loadSourcePages(sourceDir);
+  // initialize projectMap
+  let config = await siteConfig();
+  _pageMap = await loadSourcePages(config, sourceDir);
+
 };
 
 export type { DirectoryClassifierResult, FrontMatterClassifierResult } from './classifier';

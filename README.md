@@ -90,6 +90,11 @@ It will be passed to
   sourcePath: 'docs/2022-04-28-firstpage.md',
   indexPath: 'docs/2022-04-28-firstpage',
   render: [Function: render],
+  raw: [Function: raw],
   slugKey: 'firstpage'
 }
 ```
+
+## ChangeLog
+
+2022-05-27 Add extendPageData support
