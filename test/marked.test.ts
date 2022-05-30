@@ -47,12 +47,12 @@ marked('loadConfig() function should be return site.config.js', async () => {
 marked('loadSourcePages() function should be work.', async () => {
   // define test path
   const relative_path = getRelativePath(join(_fixtures, '/docs'));
-
+  process.env.NODE_ENV = "production";
   const config_relative_path = getRelativePath(join(_fixtures, 'site.config.js'));
   const config = await loadConfig(config_relative_path);
 
   const rtn = await loadSourcePages(config, relative_path);
-
+  console.log(rtn);
   if (_DEBUG) {
     console.log('Map:', rtn);
   }
@@ -71,7 +71,6 @@ marked('loadPage function should be work.', async () => {
   let page = rtn.slugMap['directorypost1'][0];
   const context = await page.render();
 
-  // console.log(context);
 
   if (_DEBUG) {
     console.log('\nPage Render:', await page.render());
