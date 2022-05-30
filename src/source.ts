@@ -88,6 +88,10 @@ const loadSources = async (config: SiteConfigDefault, sourceDir: string) => {
         await config.extendPageData(pageStruct);
       }
 
+      if (frontmatter._draft && process.env.NODE_ENV === 'production') {
+        return;
+      }
+
       // add to pathMap & slugMap
       pathMap[indexPath] = pageStruct;
       slugMap[slugKey].push(pageStruct);

@@ -5,7 +5,6 @@ const config = {
     { id: 'tag', params: { keys: ['tags'] }, type: 'frontmatter' }
   ],
   extendPageData: (page) => {
-    console.log(page);
   },
   marked: {
     options: {},

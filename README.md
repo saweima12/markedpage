@@ -102,5 +102,5 @@ It will be passed to
 ```
 
 ## ChangeLog
-
+2022-05-31 Add _draft field support to FrontMatter.(It will not be added to list in production)
 2022-05-27 Add extendPageData support
