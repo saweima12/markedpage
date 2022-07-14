@@ -1,3 +1,4 @@
+import { isDev } from './internal';
 import { loadConfig, loadSourcePages } from './source';
 import { classifyPages } from './classifier';
 import type { SourcePage, SourcePageCollection } from './types';
@@ -10,7 +11,7 @@ let _config: Record<string, any> = undefined;
  * @return {Promise<Record<string, any>>} custom config.
  */
 export const siteConfig = async (): Promise<Record<string, any>> => {
-  if (!_config) {
+  if (!_config || isDev) {
     _config = await loadConfig();
   }
   return _config;
@@ -26,7 +27,7 @@ let _pageMap: SourcePageCollection = null;
  * @return {Promise<Record<string, SourcePage>>} key: IndexPath value: SourcePage
  */
 export const pathMap = async (): Promise<Record<string, SourcePage>> => {
-  if (!_pageMap) await initializeMap();
+  if (!_pageMap || isDev) await initializeMap();
 
   return _pageMap.pathMap;
 };
@@ -38,7 +39,7 @@ export const pathMap = async (): Promise<Record<string, SourcePage>> => {
  * @return {Promise<Record<string, Array<SourcePage>>>}
  */
 export const slugMap = async (): Promise<Record<string, Array<SourcePage>>> => {
-  if (!_pageMap) await initializeMap();
+  if (!_pageMap || isDev) await initializeMap();
 
   return _pageMap.slugMap;
 };
