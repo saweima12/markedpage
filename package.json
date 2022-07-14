@@ -1,5 +1,5 @@
 {
-  "version": "0.0.19",
+  "version": "0.0.19.1",
   "name": "markedpage",
   "description": "Markdown source provider & classification utilities",
   "main": "dist/index.js",
@@ -8,8 +8,7 @@
     "build": "rollup -c",
     "test": "uvu -r tsm test test.ts$",
     "lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
-    "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. .",
-    "publish": "bash ./scripts/publish.sh"
+    "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
   },
   "files": [
     "dist/*"
