@@ -55,7 +55,7 @@ let _classifiedCollection: Record<string, any> = undefined;
  */
 export const classifiedSet = async (classifierId: string): Promise<any> => {
   // classify all SourcePage.
-  if (!_classifiedCollection) {
+  if (!_classifiedCollection || isDev) {
     const classifierList = (await siteConfig()).classifier || [];
     const list: Array<SourcePage> = Object.values(await pathMap());
     _classifiedCollection = await classifyPages({ classifierList: classifierList, pages: list });
