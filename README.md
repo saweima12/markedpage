@@ -101,6 +101,11 @@ It will be passed to
 }
 ```
 
+## Example
+
+https://github.com/saweima12/markedpage-example
+
 ## ChangeLog
+
 - 2022-05-31 Add `_draft` field support in FrontMatter.(It will not be added to list in production)
 - 2022-05-27 Add extendPageData support
