@@ -1,6 +1,8 @@
 import { isDev } from './internal';
 import { loadConfig, loadSourcePages } from './source';
-import { classifyPages } from './classifier';
+import { getClassifierMap } from './classifier';
+
+import type { ClassifierItem } from './classifier';
 import type { SourcePage, SourcePageCollection } from './types';
 
 let _config: Record<string, any> = undefined;
@@ -45,7 +47,7 @@ export const slugMap = async (): Promise<Record<string, Array<SourcePage>>> => {
 };
 
 // cache classified result.
-let _classifiedCollection: Record<string, any> = undefined;
+let _classifierMap: Record<string, ClassifierItem> = undefined;
 /**
  * Get classified pages set.
  *
@@ -54,14 +56,16 @@ let _classifiedCollection: Record<string, any> = undefined;
  * @return {Promise<Record<string,any>>}
  */
 export const classifiedSet = async (classifierId: string): Promise<any> => {
-  // classify all SourcePage.
-  if (!_classifiedCollection || isDev) {
+  // Register all classifier.
+  if (!_classifierMap || isDev) {
     const classifierList = (await siteConfig()).classifier || [];
-    const list: Array<SourcePage> = Object.values(await pathMap());
-    _classifiedCollection = await classifyPages({ classifierList: classifierList, pages: list });
+    _classifierMap = getClassifierMap(classifierList);
   }
 
-  const _classifiedSet = _classifiedCollection[classifierId];
+  const pageList: Array<SourcePage> = Object.values(await pathMap());
+  const _classifier = _classifierMap[classifierId];
+  const _classifiedSet = await _classifier(pageList);
+
   if (_classifiedSet) return _classifiedSet;
 
   throw new Error(`classifierId: ${classifierId} not found.`);

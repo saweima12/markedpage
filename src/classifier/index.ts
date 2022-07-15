@@ -6,33 +6,37 @@ export interface ClassifierHandle<Locals = Record<string, any>, Result = Record<
   (input: { options: ClassifierOptions<Locals>; pages: Array<SourcePage> | any }): Promise<Result>;
 }
 
-export interface ClassifyHandle {
-  (input: { classifierList: Array<ClassifierOptions>; pages: Array<SourcePage> }): Promise<
-    Record<string, unknown>
-  >;
+export interface ClassifierItem {
+  (pages: Array<SourcePage>): Promise<Record<string, any>>
 }
 
-export const classifyPages: ClassifyHandle = async (input) => {
-  let _classifiedMap: Record<string, any> = {};
-  const { classifierList, pages } = input;
+export interface ClassiferRegister {
+  (classifierList: Array<ClassifierOptions>) : Record<string, ClassifierItem>;
+}
 
 
-  classifierList.map(async (_classifierOption: ClassifierOptions) => {
+
+export const getClassifierMap: ClassiferRegister = (classifierList) => {
+  let _classifierMap: Record<string, ClassifierItem> = {};
+
+  classifierList.map(async (options: ClassifierOptions) => {
     let _classifier: ClassifierHandle = undefined;
 
-    if (_classifierOption.type == 'directory') _classifier = DirectoryClassifierHandle;
-    else if (_classifierOption.type == 'frontmatter') _classifier = FrontMatterClassifierHandle;
-    else _classifier = _classifierOption.type;
+    if (options.type == 'directory') _classifier = DirectoryClassifierHandle;
+    else if (options.type == 'frontmatter') _classifier = FrontMatterClassifierHandle;
+    else _classifier = options.type;
 
     if (!_classifier) {
       throw 'ClassifierHandle not found.';
       return;
     }
 
-    // classify by classifier
-    const _pages = await _classifier({ options: _classifierOption, pages: pages });
-    _classifiedMap[_classifierOption.id] = _pages;
+    const handler = async(pages: Array<SourcePage>) => {
+      return await _classifier({options: options, pages: pages})
+    }
+
+    _classifierMap[options.id] = handler;
   });
 
-  return _classifiedMap;
+  return _classifierMap;
 };

@@ -2,6 +2,7 @@ import { join } from 'path';
 import { suite } from 'uvu';
 import { loadConfig, loadSourcePages } from '../src/source';
 import { getAbsoultPath, getRelativePath } from '../src/internal';
+import { getClassifierMap } from '../src/classifier'
 
 import * as assert from 'uvu/assert';
 
@@ -38,7 +39,7 @@ marked('loadConfig() function should be return site.config.js', async () => {
   const relative_path = getRelativePath(join(_fixtures, 'site.config.js'));
   const rtn = await loadConfig(relative_path);
   assert.equal(output.title, rtn.title);
-  assert.equal(output.classifier[0].id, rtn.classifier[0].id);
+
   if (_DEBUG) {
     console.log('SiteConfig:', rtn);
   }
@@ -75,6 +76,29 @@ marked('loadPage function should be work.', async () => {
   if (_DEBUG) {
     console.log('\nPage Render:', await page.render());
   }
+});
+
+
+marked('getClassifierSet should be work', async () => {
+  // define test path
+  const relative_path = getRelativePath(join(_fixtures, '/docs'));
+  process.env.NODE_ENV = "production";
+  const config_relative_path = getRelativePath(join(_fixtures, 'site.config.js'));
+  const config = await loadConfig(config_relative_path);
+
+  // 
+  const classifierMap = getClassifierMap(config.classifier || []);
+  console.log(classifierMap);
+
+  const pageMap = await loadSourcePages(config, relative_path);
+
+  console.log(pageMap)
+  // postSet
+  const _classifier = classifierMap["post"];
+  const pageList = Object.values(pageMap.pathMap);
+
+  console.log(pageList)
+
 });
 
 marked.run();
