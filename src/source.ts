@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { marked } from 'marked';
 import {
+  isDev,
   getAbsoultPath,
   getRelativePath,
   getSlugParams,
@@ -43,7 +44,9 @@ export const loadSourcePages = async (
 
 // load: All markdown file from /docs/*
 const loadSources = async (config: SiteConfigDefault, sourceDir: string) => {
-  console.log('::: Loading docs ::: ');
+  const time = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+
+  console.debug(`[${time}] ::: Loading docs ::: `);
   const relativeDirPath = getRelativePath(sourceDir);
   // loading source by vite & fast-glob.
   let sources = await getAvaliableSource(relativeDirPath);
@@ -88,7 +91,7 @@ const loadSources = async (config: SiteConfigDefault, sourceDir: string) => {
         await config.extendPageData(pageStruct);
       }
 
-      if (frontmatter._draft && process.env.NODE_ENV === 'production') {
+      if (frontmatter._draft && !isDev) {
         return;
       }
 

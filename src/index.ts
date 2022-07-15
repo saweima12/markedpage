@@ -27,7 +27,7 @@ let _pageMap: SourcePageCollection = null;
  * @return {Promise<Record<string, SourcePage>>} key: IndexPath value: SourcePage
  */
 export const pathMap = async (): Promise<Record<string, SourcePage>> => {
-  if (!_pageMap || isDev) await initializeMap();
+  if (!_pageMap || isDev) await loadingPageMap();
 
   return _pageMap.pathMap;
 };
@@ -39,7 +39,7 @@ export const pathMap = async (): Promise<Record<string, SourcePage>> => {
  * @return {Promise<Record<string, Array<SourcePage>>>}
  */
 export const slugMap = async (): Promise<Record<string, Array<SourcePage>>> => {
-  if (!_pageMap || isDev) await initializeMap();
+  if (!_pageMap || isDev) await loadingPageMap();
 
   return _pageMap.slugMap;
 };
@@ -95,12 +95,13 @@ export const getPage = async (
   throw new Error(`path ${indexKey} is not found. available path:\r\t${avaliablePath} \n`);
 };
 
-export const initializeMap = async () => {
+export const loadingPageMap = async () => {
   const sourceDir = './docs';
   // initialize projectMap
   let config = await siteConfig();
   _pageMap = await loadSourcePages(config, sourceDir);
 };
 
-export type { DirectoryClassifierResult, FrontMatterClassifierResult } from './classifier';
+export type { DirectoryClassifierResult } from './classifier/directory';
+export type { FrontMatterClassifierResult } from './classifier/frontmatter';
 export type { SourcePage };

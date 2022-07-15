@@ -1,7 +1,6 @@
 export { getPage, siteConfig, slugMap, pathMap, classifiedSet } from './index';
-export type {
-  DirectoryClassifierResult,
-  FrontMatterClassifierResult,
-  ClassifierHandle
-} from './classifier';
+
+export type { ClassifierHandle } from './classifier';
+export type { DirectoryClassifierResult } from './classifier/directory';
+export type { FrontMatterClassifierResult } from './classifier/frontmatter';
 export type { SourcePage, SourcePageCollection } from './types';

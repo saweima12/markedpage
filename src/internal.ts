@@ -6,7 +6,7 @@ import path from 'path';
 import type { HeadingItem } from './types';
 import { marked } from 'marked';
 
-export const isDev = process.env.NODE_ENV == "development";
+export const isDev = process.env.NODE_ENV == 'development';
 
 export const getAbsoultPath = (relativePath: string): string => {
   const cwd = process.cwd();
