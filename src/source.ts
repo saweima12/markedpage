@@ -43,6 +43,10 @@ export const loadConfig = async (configPath?: string): Promise<SiteConfigDefault
   if (config.hasOwnProperty('marked')) {
     loadMarkedConfig(config.marked);
   }
+
+  // update config cache.
+  _config = config
+
   return config;
 };
 
