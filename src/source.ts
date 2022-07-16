@@ -12,11 +12,23 @@ import {
 
 import type { SourcePage, SourcePageCollection, SiteConfigDefault, MarkedConfig } from './types';
 
-// Get Config.
-export const loadConfig = async (configPath?: string): Promise<SiteConfigDefault> => {
+// config cache.
+let _config: Record<string, any> = undefined;
+
+export const getConfig = async (configPath?: string) => {
   configPath = configPath ?? './src/site.config.js';
+  if (!_config || isDev)
+    _config = await loadConfig(configPath);
+
+  return _config
+}
+
+
+const loadConfig = async (configPath: string): Promise<SiteConfigDefault> => {
+  // get absoult path.
   let _path = getAbsoultPath(configPath);
 
+  // check config.js exists.
   const isExist = fs.existsSync(_path);
   if (!isExist) {
     // Not a file, or unexists.
@@ -28,18 +40,28 @@ export const loadConfig = async (configPath?: string): Promise<SiteConfigDefault
   const _loadConfig = await import(_path);
   const config = _loadConfig.default;
 
-  if ('marked' in config) {
+  if (config.hasOwnProperty('marked')) {
     loadMarkedConfig(config.marked);
   }
   return config;
 };
 
-// Get all pages from sourceDir.
+let _pageMap: SourcePageCollection = undefined;
+
+export const getPageMap = async (config: Record<string, any>, sourceDir?: string) => {
+  if (!_pageMap) {
+    sourceDir = sourceDir ?? "./docs";
+    await loadSourcePages(config, sourceDir);
+  }
+  return _pageMap
+}
+
+// loading all pages from sourceDir.
 export const loadSourcePages = async (
   config: Record<string, any>,
   sourceDir: string
-): Promise<SourcePageCollection> => {
-  return await loadSources(config, sourceDir);
+) => {
+  _pageMap = await loadSources(config, sourceDir);
 };
 
 // load: All markdown file from /docs/*
@@ -66,7 +88,7 @@ const loadSources = async (config: SiteConfigDefault, sourceDir: string) => {
 
       // process slugPath & slugMap.
       let { slugKey, slugDate } = getSlugParams(indexPath);
-      if (!(slugKey in slugMap)) slugMap[slugKey] = [];
+      if (!slugMap.hasOwnProperty(slugKey)) slugMap[slugKey] = [];
 
       // get file path & created datetime.
       const fStat = await fs.promises.stat(sourcePath);
@@ -87,7 +109,7 @@ const loadSources = async (config: SiteConfigDefault, sourceDir: string) => {
         slugKey: slugKey
       };
 
-      if ('extendPageData' in config) {
+      if (config.hasOwnProperty('extendPageData')) {
         await config.extendPageData(pageStruct);
       }
 
@@ -136,10 +158,10 @@ const getAvaliableSource = async (sourceDir: string, filter = ['.md']) => {
 
 // load all markedConfig from config.marked
 const loadMarkedConfig = (config: MarkedConfig) => {
-  if ('options' in config) {
+  if (config.hasOwnProperty('options')) {
     marked.setOptions(config.options);
   }
-  if ('extensions' in config) {
+  if (config.hasOwnProperty('extensions')) {
     Object.values(config.extensions).map((extension) => marked.use(extension));
   }
 };

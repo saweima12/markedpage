@@ -18,7 +18,7 @@ export const FrontMatterClassifierHandle: ClassifierHandle<
     const frontMatter = page.frontMatter;
 
     params.keys.map((key: string) => {
-      if (!(key in frontMatter)) return;
+      if (!frontMatter.hasOwnProperty(key)) return;
 
       const fieldValue = frontMatter[key];
       if (typeof fieldValue == 'string') {
