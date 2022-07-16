@@ -1,5 +1,5 @@
 export { getPage, siteConfig, slugMap, pathMap, classifiedSet } from './index';
-export { markedpageVitePlugin, onContentUpdate, onSiteConfigUpdate } from './vite';
+export { markedpageVitePlugin, onContentUpdate } from './vite';
 
 export type { ClassifierHandle } from './classifier';
 export type { DirectoryClassifierResult } from './classifier/directory';
