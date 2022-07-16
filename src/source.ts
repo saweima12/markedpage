@@ -16,7 +16,6 @@ import type { SourcePage, SourcePageCollection, SiteConfigDefault, MarkedConfig 
 let _config: Record<string, any> = undefined;
 
 export const getConfig = async (configPath?: string) => {
-  configPath = configPath ?? './src/site.config.js';
   if (!_config || isDev)
     _config = await loadConfig(configPath);
 
@@ -24,7 +23,8 @@ export const getConfig = async (configPath?: string) => {
 }
 
 
-const loadConfig = async (configPath: string): Promise<SiteConfigDefault> => {
+export const loadConfig = async (configPath?: string): Promise<SiteConfigDefault> => {
+  configPath = configPath ?? './src/site.config.js';
   // get absoult path.
   let _path = getAbsoultPath(configPath);
 
@@ -50,7 +50,6 @@ let _pageMap: SourcePageCollection = undefined;
 
 export const getPageMap = async (config: Record<string, any>, sourceDir?: string) => {
   if (!_pageMap) {
-    sourceDir = sourceDir ?? "./docs";
     await loadSourcePages(config, sourceDir);
   }
   return _pageMap
@@ -59,8 +58,9 @@ export const getPageMap = async (config: Record<string, any>, sourceDir?: string
 // loading all pages from sourceDir.
 export const loadSourcePages = async (
   config: Record<string, any>,
-  sourceDir: string
+  sourceDir?: string
 ) => {
+  sourceDir = sourceDir ?? "./docs";
   _pageMap = await loadSources(config, sourceDir);
 };
 
