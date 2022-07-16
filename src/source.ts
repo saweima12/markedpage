@@ -37,7 +37,7 @@ export const loadConfig = async (configPath?: string): Promise<SiteConfigDefault
   }
 
   // is file, import it and loading config.
-  const _loadConfig = await import(_path);
+  const _loadConfig = await import(/* @vite-ignore */_path);
   const config = _loadConfig.default;
 
   if (config.hasOwnProperty('marked')) {

@@ -28,7 +28,7 @@ export const markedpageVitePlugin: Plugin = () => {
       server.watcher.add(path.join(process.cwd(), "docs"));
       server.watcher.add(path.join(process.cwd(), "/src/site.config.js"));
     },
-    async handleHotUpdate(ctx) {
+    async handleHotUpdate(ctx: HmrContext) {
       const content_match = /\/docs\/(.+)\.md$/.exec(ctx.file);
       const config_match = /\/site.config.js/.exec(ctx.file);
       // didn't match, use default behavior.
@@ -67,11 +67,7 @@ const onContentMatch = async(ctx: HmrContext, filePath:string, indexPath:string)
 }
 
 const onConfigMatch = async (ctx: HmrContext) => {
-  await loadConfig();
-
   // update client
-  ctx.server.ws.send({
-    type: "custom",
-    event: "markedpage:content-update"
-  });
+  console.info(`site.config changed: restarting vite server. - file: ${ctx.file}`);
+  ctx.server.restart()
 }
