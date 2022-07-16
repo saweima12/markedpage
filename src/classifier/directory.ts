@@ -1,5 +1,6 @@
 import type { SourcePage } from '../types';
 import type { ClassifierHandle } from '.';
+import { logger } from '../log';
 
 interface DirectoryClassifierParams {
   path: string;
@@ -22,6 +23,8 @@ export const DirectoryClassifierHandle: ClassifierHandle<
 
     _classifiedPages.push(page);
   });
+
+  logger.info(`::: Run DirectoryClassifierHandle - ${id}`);
 
   return { pages: _classifiedPages };
 };

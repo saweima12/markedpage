@@ -11,17 +11,16 @@ import {
 } from './internal';
 
 import type { SourcePage, SourcePageCollection, SiteConfigDefault, MarkedConfig } from './types';
+import { logger } from './log';
 
 // config cache.
 let _config: Record<string, any> = undefined;
 
 export const getConfig = async (configPath?: string) => {
-  if (!_config || isDev)
-    _config = await loadConfig(configPath);
+  if (!_config || isDev) _config = await loadConfig(configPath);
 
-  return _config
-}
-
+  return _config;
+};
 
 export const loadConfig = async (configPath?: string): Promise<SiteConfigDefault> => {
   configPath = configPath ?? './src/site.config.js';
@@ -37,7 +36,7 @@ export const loadConfig = async (configPath?: string): Promise<SiteConfigDefault
   }
 
   // is file, import it and loading config.
-  const _loadConfig = await import(/* @vite-ignore */_path);
+  const _loadConfig = await import(/* @vite-ignore */ _path);
   const config = _loadConfig.default;
 
   if (config.hasOwnProperty('marked')) {
@@ -45,7 +44,7 @@ export const loadConfig = async (configPath?: string): Promise<SiteConfigDefault
   }
 
   // update config cache.
-  _config = config
+  _config = config;
 
   return config;
 };
@@ -54,25 +53,20 @@ let _pageMap: SourcePageCollection = undefined;
 
 export const getPageMap = async (config: Record<string, any>, sourceDir?: string) => {
   if (!_pageMap) {
+    logger.debug("::: Loading docs")
     await loadSourcePages(config, sourceDir);
   }
-  return _pageMap
-}
+  return _pageMap;
+};
 
 // loading all pages from sourceDir.
-export const loadSourcePages = async (
-  config: Record<string, any>,
-  sourceDir?: string
-) => {
-  sourceDir = sourceDir ?? "./docs";
+export const loadSourcePages = async (config: Record<string, any>, sourceDir?: string) => {
+  sourceDir = sourceDir ?? './docs';
   _pageMap = await loadSources(config, sourceDir);
 };
 
 // load: All markdown file from /docs/*
 const loadSources = async (config: SiteConfigDefault, sourceDir: string) => {
-  const time = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-
-  console.debug(`[${time}] ::: Loading docs ::: `);
   const relativeDirPath = getRelativePath(sourceDir);
   // loading source by vite & fast-glob.
   let sources = await getAvaliableSource(relativeDirPath);

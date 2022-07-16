@@ -1,5 +1,6 @@
 import type { SourcePage } from '../types';
 import type { ClassifierHandle } from '.';
+import { logger } from '../log';
 
 interface FrontMatterClassifierParams {
   keys: Array<string>;
@@ -12,7 +13,7 @@ export const FrontMatterClassifierHandle: ClassifierHandle<
   FrontMatterClassifierResult
 > = async ({ options, pages }) => {
   let _classifiedPages = {};
-  let { params } = options;
+  let { id, params } = options;
 
   pages.map((page: SourcePage) => {
     const frontMatter = page.frontMatter;
@@ -30,6 +31,8 @@ export const FrontMatterClassifierHandle: ClassifierHandle<
       }
     });
   });
+
+  logger.info(`::: Run FrontMatterClassifierHandle - ${id}`);
   return _classifiedPages;
 };
 
