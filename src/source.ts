@@ -17,7 +17,7 @@ import { logger } from './log';
 let _config: Record<string, any> = undefined;
 
 export const getConfig = async (configPath?: string) => {
-  if (!_config || isDev) _config = await loadConfig(configPath);
+  if (!_config || isDev() ) _config = await loadConfig(configPath);
 
   return _config;
 };
@@ -111,7 +111,7 @@ const loadSources = async (config: SiteConfigDefault, sourceDir: string) => {
         await config.extendPageData(pageStruct);
       }
 
-      if (frontmatter._draft && !isDev) {
+      if (frontmatter._draft && !isDev()) {
         return;
       }
 
