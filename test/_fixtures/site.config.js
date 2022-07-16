@@ -1,7 +1,7 @@
 const config = {
   title: 'TestWebsite',
   classifier: [
-    { id: 'post', params: { path: '/posts/' }, type: 'directory' },
+    { id: 'post', params: { path: '/_posts/' }, type: 'directory' },
     { id: 'tag', params: { keys: ['tags'] }, type: 'frontmatter' }
   ],
   extendPageData: (page) => {},
