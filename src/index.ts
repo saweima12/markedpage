@@ -1,8 +1,6 @@
-import { isDev } from './internal';
 import { getConfig, getPageMap } from './source';
 import { initClassifierMap, getClassifiedResult, isInitial } from './classifier';
 
-import type { ClassifierItem } from './classifier';
 import type { SourcePage } from './types';
 
 /**
