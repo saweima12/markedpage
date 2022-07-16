@@ -10,14 +10,35 @@ export interface ClassifierItem {
   (pages: Array<SourcePage>): Promise<Record<string, any>>
 }
 
-export interface ClassiferRegister {
+interface ClassiferMapHandler {
   (classifierList: Array<ClassifierOptions>) : Record<string, ClassifierItem>;
 }
 
+export let isInitial = false;
+let classifiedPageCache: Record<string, any> = {};
+let classifierMap: Record<string, ClassifierItem> = {};
 
 
-export const getClassifierMap: ClassiferRegister = (classifierList) => {
-  let _classifierMap: Record<string, ClassifierItem> = {};
+export const getClassifiedResult = async (classifierId: string, pages:Array<SourcePage>) => {
+
+  if (!classifierMap.hasOwnProperty(classifierId)) {
+    console.warn(`${classifierId} key not found.`);
+    return null;
+  }
+
+  if (classifiedPageCache.hasOwnProperty(classifierId)) {
+    return classifiedPageCache[classifierId]
+  }
+
+  const _classifier = classifierMap[classifierId];
+  // get result data & cache it.
+  let result = await _classifier(pages);
+  classifiedPageCache[classifierId] = result;
+  return result;
+}
+
+export const initClassifierMap: ClassiferMapHandler = (classifierList) => {
+  classifierMap = {}
 
   classifierList.map(async (options: ClassifierOptions) => {
     let _classifier: ClassifierHandle = undefined;
@@ -35,8 +56,12 @@ export const getClassifierMap: ClassiferRegister = (classifierList) => {
       return await _classifier({options: options, pages: pages})
     }
 
-    _classifierMap[options.id] = handler;
+    classifierMap[options.id] = handler;
   });
 
-  return _classifierMap;
+  // Clear classifiedPage Cache
+  classifiedPageCache = {};
+  isInitial = true;
+
+  return classifierMap;
 };
