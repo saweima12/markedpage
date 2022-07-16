@@ -13,7 +13,6 @@ export const siteConfig = async (): Promise<Record<string, any>> => {
   return await getConfig();
 };
 
-
 /**
  * Get All source page, index by indexPath
  *
@@ -35,7 +34,6 @@ export const slugMap = async (): Promise<Record<string, Array<SourcePage>>> => {
   const _pageMap = await pageMap();
   return _pageMap.slugMap;
 };
-
 
 /**
  * Get classified pages set.

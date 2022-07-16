@@ -2,7 +2,7 @@ import { join } from 'path';
 import { suite } from 'uvu';
 import { getConfig, getPageMap } from '../src/source';
 import { getAbsoultPath, getRelativePath } from '../src/internal';
-import { getClassifiedResult, initClassifierMap } from '../src/classifier'
+import { getClassifiedResult, initClassifierMap } from '../src/classifier';
 
 import * as assert from 'uvu/assert';
 
@@ -48,7 +48,7 @@ marked('loadConfig() function should be return site.config.js', async () => {
 marked('loadSourcePages() function should be work.', async () => {
   // define test path
   const relative_path = getRelativePath(join(_fixtures, '/docs'));
-  process.env.NODE_ENV = "production";
+  process.env.NODE_ENV = 'production';
   const config_relative_path = getRelativePath(join(_fixtures, 'site.config.js'));
   const config = await getConfig(config_relative_path);
 
@@ -71,17 +71,15 @@ marked('loadPage function should be work.', async () => {
   let page = rtn.slugMap['directorypost1'][0];
   const context = await page.render();
 
-
   if (_DEBUG) {
     console.log('\nPage Render:', await page.render());
   }
 });
 
-
 marked('getClassifierSet should be work', async () => {
   // define test path
   const relative_path = getRelativePath(join(_fixtures, '/docs'));
-  process.env.NODE_ENV = "production";
+  process.env.NODE_ENV = 'production';
   const config_relative_path = getRelativePath(join(_fixtures, 'site.config.js'));
   const config = await getConfig(config_relative_path);
 
@@ -90,9 +88,7 @@ marked('getClassifierSet should be work', async () => {
   const pageList = Object.values(pageMap.pathMap);
 
   // postSet
-  const result = await getClassifiedResult("post", pageList);
-  console.log(result)
-  
+  const result = await getClassifiedResult('post', pageList);
 });
 
 marked.run();

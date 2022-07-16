@@ -7,27 +7,25 @@ export interface ClassifierHandle<Locals = Record<string, any>, Result = Record<
 }
 
 export interface ClassifierItem {
-  (pages: Array<SourcePage>): Promise<Record<string, any>>
+  (pages: Array<SourcePage>): Promise<Record<string, any>>;
 }
 
 interface ClassiferMapHandler {
-  (classifierList: Array<ClassifierOptions>) : Record<string, ClassifierItem>;
+  (classifierList: Array<ClassifierOptions>): Record<string, ClassifierItem>;
 }
 
 export let isInitial = false;
 let classifiedPageCache: Record<string, any> = {};
 let classifierMap: Record<string, ClassifierItem> = {};
 
-
-export const getClassifiedResult = async (classifierId: string, pages:Array<SourcePage>) => {
-
+export const getClassifiedResult = async (classifierId: string, pages: Array<SourcePage>) => {
   if (!classifierMap.hasOwnProperty(classifierId)) {
     console.warn(`${classifierId} key not found.`);
     return null;
   }
 
   if (classifiedPageCache.hasOwnProperty(classifierId)) {
-    return classifiedPageCache[classifierId]
+    return classifiedPageCache[classifierId];
   }
 
   const _classifier = classifierMap[classifierId];
@@ -35,10 +33,10 @@ export const getClassifiedResult = async (classifierId: string, pages:Array<Sour
   let result = await _classifier(pages);
   classifiedPageCache[classifierId] = result;
   return result;
-}
+};
 
 export const initClassifierMap: ClassiferMapHandler = (classifierList) => {
-  classifierMap = {}
+  classifierMap = {};
 
   classifierList.map(async (options: ClassifierOptions) => {
     let _classifier: ClassifierHandle = undefined;
@@ -52,9 +50,9 @@ export const initClassifierMap: ClassiferMapHandler = (classifierList) => {
       return;
     }
 
-    const handler = async(pages: Array<SourcePage>) => {
-      return await _classifier({options: options, pages: pages})
-    }
+    const handler = async (pages: Array<SourcePage>) => {
+      return await _classifier({ options: options, pages: pages });
+    };
 
     classifierMap[options.id] = handler;
   });
