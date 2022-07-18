@@ -67,13 +67,11 @@ export const get: RequestHandler = async () => {
 ## Example
 
 ```md
-## <!-- 2022-04-28-firstpage.md -->
+<!-- 2022-04-28-firstpage.md -->
 
 title: FirstPost
 tags:
-
 - test
-
 ---
 
 This is summary field.
@@ -101,12 +99,45 @@ It will be passed to
 }
 ```
 
+## Markdown Vite HMR Support 
+
+- Add `markedpageVitePlugin()` to config.plugins
+```js
+// vite.config.js
+import { sveltekit } from '@sveltejs/kit/vite';
+import { markedpageVitePlugin } from 'markedpage';
+
+/** @type {import('vite').UserConfig} */
+const config = {
+	plugins: [sveltekit(), markedpageVitePlugin()]
+};
+
+export default config;
+```
+
+- Listen to onContentUpdate and update the endpoint with invalidate.
+```js
+// src/routes/
+<script lang="ts">
+    import { invalidate } from '$app/navigation';
+    import { page } from '$app/stores';
+    import { onContentUpdate } from 'markedpage';
+
+    onContentUpdate((payload) => {
+        let slug = $page.params.slug;
+        // update endpoint data.
+        invalidate(`/api/posts.json`);
+        invalidate(`/api/posts/${slug}.json`);
+    });
+</script>
+```
+
 ## Example
 
 https://github.com/saweima12/markedpage-example
 
 ## ChangeLog
-
-- [2022-07-16] Add markdown file Vite HMR Support.
+- [2022-07-18] v0.1.7 - Replace chalk.js with kleur
+- [2022-07-16] v0.1.5 - Add markdown file Vite HMR Support.
 - [2022-05-31] Add `_draft` field support in FrontMatter.(It will not be added to list in production)
 - [2022-05-27] Add extendPageData support
