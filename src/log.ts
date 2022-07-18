@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import { cyan, green } from 'kleur'
 const prefix = 'vite:markedpage';
 
 export const logger = {
@@ -9,7 +9,7 @@ export const logger = {
 };
 
 const _prefixMsg = () => {
-  return `[${chalk.green(getCurrentTime())}][${chalk.blue(prefix)}]`;
+  return `[${green(getCurrentTime())}][${cyan(prefix)}]`;
 };
 
 const _log = (func, message: any, ...options:any[]) => {
