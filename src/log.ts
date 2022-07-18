@@ -1,4 +1,4 @@
-import { cyan, green } from 'kleur'
+import { cyan, green } from 'kleur/colors'
 const prefix = 'vite:markedpage';
 
 export const logger = {
