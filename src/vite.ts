@@ -2,7 +2,7 @@ import path from 'path';
 import type { HmrContext, Plugin } from 'vite';
 
 import { initClassifierMap } from './classifier';
-import { getConfig, loadSourcePages } from './source';
+import { getConfig, setConfig, loadSourcePages } from './source';
 import { logger } from './log';
 
 
@@ -14,9 +14,13 @@ export const onContentUpdate = (callback: (payload: Record<string, any>) => void
   }
 };
 
-export const markedpageVitePlugin: Plugin = () => {
+export const markedpageVitePlugin = (siteConfig?: Record<string, any>): Plugin => {
   return {
     name: 'markedpage-watch-docs',
+    configResolved(config) {
+      if (siteConfig) 
+        setConfig(siteConfig);
+    },
     configureServer(server) {
       // add watch path "${project_root}/docs"
       server.watcher.add(path.join(process.cwd(), 'docs'));
