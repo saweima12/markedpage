@@ -23,6 +23,11 @@ export const getConfig = async (configPath?: string) => {
 
 export const setConfig = (config: Record<string, any>) => {
   _config = config;
+
+  if (config.hasOwnProperty('marked')) {
+    loadMarkedConfig(config.marked);
+  }
+
 }
 
 export const loadConfigDefault = async (configPath?: string): Promise<SiteConfigDefault> => {
