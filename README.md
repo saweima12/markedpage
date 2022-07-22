@@ -139,7 +139,8 @@ export default config;
 https://github.com/saweima12/markedpage-example
 
 ## ChangeLog
-- [2022-07-22] v0.1.8 - Added support for site.config.js auto-reload via configuration
+- [2022-07-22] v0.1.9 - Fix: marked config is not loaded properly
+- [2022-07-22] v0.1.8 - Added support for site.config.js auto-reload via configuration 
 - [2022-07-18] v0.1.7 - Replace chalk.js with kleur
 - [2022-07-16] v0.1.5 - Add markdown file Vite HMR Support.
 - [2022-05-31] Add `_draft` field support in FrontMatter.(It will not be added to list in production)
