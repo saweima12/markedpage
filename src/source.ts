@@ -17,12 +17,15 @@ import { logger } from './log';
 let _config: Record<string, any> = undefined;
 
 export const getConfig = async (configPath?: string) => {
-  if (!_config || isDev() ) _config = await loadConfig(configPath);
-
+  if (!_config) _config = await loadConfigDefault(configPath);
   return _config;
 };
 
-export const loadConfig = async (configPath?: string): Promise<SiteConfigDefault> => {
+export const setConfig = (config: Record<string, any>) => {
+  _config = config;
+}
+
+export const loadConfigDefault = async (configPath?: string): Promise<SiteConfigDefault> => {
   configPath = configPath ?? './src/site.config.js';
   // get absoult path.
   let _path = getAbsoultPath(configPath);
@@ -48,6 +51,7 @@ export const loadConfig = async (configPath?: string): Promise<SiteConfigDefault
 
   return config;
 };
+
 
 let _pageMap: SourcePageCollection = undefined;
 
