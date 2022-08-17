@@ -45,7 +45,7 @@ marked('loadConfig() function should be return site.config.js', async () => {
   }
 });
 
-marked('loadSourcePages() function should be work.', async () => {
+marked('getPageMap() function should be work.', async () => {
   // define test path
   const relative_path = getRelativePath(join(_fixtures, '/docs'));
   process.env.NODE_ENV = 'production';

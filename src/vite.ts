@@ -2,7 +2,7 @@ import path from 'path';
 import type { HmrContext, Plugin } from 'vite';
 
 import { initClassifierMap } from './classifier';
-import { getConfig, setConfig, loadSourcePages } from './source';
+import { getConfig, setConfig, initPageMap } from './source';
 import { logger } from './log';
 
 
@@ -42,8 +42,8 @@ const onContentMatch = async (ctx: HmrContext, filePath: string, indexPath: stri
   const config = await getConfig();
 
   // update pageMap & classiferMap
-  await loadSourcePages(config);
-  initClassifierMap(config.classifier || []);
+  await initPageMap(config);
+  await initClassifierMap(config.classifier || []);
 
   // print message
   console.clear();

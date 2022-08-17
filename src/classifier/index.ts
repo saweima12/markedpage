@@ -11,7 +11,7 @@ export interface ClassifierItem {
 }
 
 interface ClassiferMapHandler {
-  (classifierList: Array<ClassifierOptions>): Record<string, ClassifierItem>;
+  (classifierList: Array<ClassifierOptions>): Promise<Record<string, ClassifierItem>>;
 }
 
 export let isInitial = false;
@@ -35,10 +35,11 @@ export const getClassifiedResult = async (classifierId: string, pages: Array<Sou
   return result;
 };
 
-export const initClassifierMap: ClassiferMapHandler = (classifierList) => {
+export const initClassifierMap: ClassiferMapHandler = async (classifierList) => {
   classifierMap = {};
 
-  classifierList.map(async (options: ClassifierOptions) => {
+  await Promise.all(
+    classifierList.map(async (options: ClassifierOptions) => {
     let _classifier: ClassifierHandle = undefined;
 
     if (options.type == 'directory') _classifier = DirectoryClassifierHandle;
@@ -55,7 +56,7 @@ export const initClassifierMap: ClassiferMapHandler = (classifierList) => {
     };
 
     classifierMap[options.id] = handler;
-  });
+  }));
 
   // Clear classifiedPage Cache
   classifiedPageCache = {};

@@ -12,6 +12,7 @@ import {
 
 import type { SourcePage, SourcePageCollection, SiteConfigDefault, MarkedConfig } from './types';
 import { logger } from './log';
+import { pathMap } from './main';
 
 // config cache.
 let _config: Record<string, any> = undefined;
@@ -57,25 +58,43 @@ export const loadConfigDefault = async (configPath?: string): Promise<SiteConfig
   return config;
 };
 
-
 let _pageMap: SourcePageCollection = undefined;
 
-export const getPageMap = async (config: Record<string, any>, sourceDir?: string) => {
+export const getPageMap = async (config: SiteConfigDefault, sourceDir?: string) => {
   if (!_pageMap) {
     logger.debug("::: Loading docs")
-    await loadSourcePages(config, sourceDir);
+    await initPageMap(config, sourceDir);
   }
   return _pageMap;
 };
 
 // loading all pages from sourceDir.
-export const loadSourcePages = async (config: Record<string, any>, sourceDir?: string) => {
+export const initPageMap = async (config: SiteConfigDefault, sourceDir?: string) => {
   sourceDir = sourceDir ?? './docs';
-  _pageMap = await loadSources(config, sourceDir);
+  
+  // define path parameter
+  const relativeDirPath = getRelativePath(sourceDir);
+  let sources = await getAvaliableSource(relativeDirPath);
+  
+  // define result block;
+  let pathMap: Record<string, SourcePage> = {};
+  let slugMap: Record<string, Array<SourcePage>> = {};
+  
+  // 
+  const sourceDirPtn = new RegExp(`^${sourceDir}`);
+  await Promise.all(
+    Object.entries(sources).map(async ([sourcePath, pageAsync]) => {
+      const pageObj = await pageAsync();
+
+    })
+  );
+
+
+  _pageMap = { pathMap: pathMap, slugMap: slugMap }
 };
 
 // load: All markdown file from /docs/*
-const loadSources = async (config: SiteConfigDefault, sourceDir: string) => {
+const loadSourcePages = async (config: SiteConfigDefault, sourceDir: string) => {
   const relativeDirPath = getRelativePath(sourceDir);
   // loading source by vite & fast-glob.
   let sources = await getAvaliableSource(relativeDirPath);
@@ -83,7 +102,7 @@ const loadSources = async (config: SiteConfigDefault, sourceDir: string) => {
   let slugMap: Record<string, Array<SourcePage>> = {};
 
   const ptn = new RegExp(`^${sourceDir}`);
-  // traversal all markdown page.
+  // traversal alfl markdown page.
   await Promise.all(
     Object.entries(sources).map(async ([sourcePath, pageAsync]) => {
       let pageObj = await pageAsync(); // get page's metadata;
@@ -149,6 +168,7 @@ const getAvaliableSource = async (sourceDir: string, filter = ['.md']) => {
         const fstat = await fs.promises.stat(fullPath);
         if (fstat.isDirectory()) {
           initialContainer = await walk(itemPath, initialContainer);
+
         } else if (fstat.isFile()) {
           filter.map((sname: string) => {
             if (item.includes(sname)) {
