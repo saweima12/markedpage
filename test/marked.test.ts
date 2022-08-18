@@ -1,10 +1,12 @@
+import fs from 'fs';
 import { join } from 'path';
 import { suite } from 'uvu';
-import { getConfig, getPageMap } from '../src/source';
+import { getConfig, getPageMap, reloadSourcePage } from '../src/source';
 import { getAbsoultPath, getRelativePath } from '../src/internal';
 import { getClassifiedResult, initClassifierMap } from '../src/classifier';
 
 import * as assert from 'uvu/assert';
+import { DirectoryClassifierResult } from '../src/classifier/directory';
 
 const _DEBUG = false;
 // define test suite.
@@ -20,7 +22,7 @@ marked('it should be get project absoult path', async () => {
   assert.equal(output, rtn);
 
   if (_DEBUG) {
-    console.log(`\n${rtn}`);
+    console.log('AbsoultPath - ', `${rtn}`);
   }
 });
 
@@ -28,6 +30,9 @@ marked('it should be get realtive path', async () => {
   const output = 'test';
   const rtn = getRelativePath(`${process.cwd()}/test`);
   assert.equal(output, rtn);
+  if (_DEBUG) {
+    console.log('RelativePath -', `${rtn}`);
+  }
 });
 
 marked('loadConfig() function should be return site.config.js', async () => {
@@ -69,10 +74,10 @@ marked('loadPage function should be work.', async () => {
   const rtn = await getPageMap(config, relative_path);
 
   let page = rtn.slugMap['directorypost1'][0];
-  const context = await page.render();
+  const content = await page.render();
 
   if (_DEBUG) {
-    console.log('\nPage Render:', await page.render());
+    console.log('\nPage Render:', content);
   }
 });
 
@@ -83,12 +88,35 @@ marked('getClassifierSet should be work', async () => {
   const config_relative_path = getRelativePath(join(_fixtures, 'site.config.js'));
   const config = await getConfig(config_relative_path);
 
-  const classifierMap = initClassifierMap(config.classifier || []);
+  // initialize classifierMap & pageMap.
+  await initClassifierMap(config.classifier || []);
   const pageMap = await getPageMap(config, relative_path);
   const pageList = Object.values(pageMap.pathMap);
 
   // postSet
-  const result = await getClassifiedResult('post', pageList);
+  const result: DirectoryClassifierResult = await getClassifiedResult('post', pageList);
+  assert.equal(result.pages.length, 1);
+});
+
+marked('reloadSourcePage should be work', async () => {
+  // define test path
+  const relative_path = getRelativePath(join(_fixtures, '/docs'));
+  process.env.NODE_ENV = 'production';
+  const config_relative_path = getRelativePath(join(_fixtures, 'site.config.js'));
+  const config = await getConfig(config_relative_path);
+
+  // getPage.
+  const rtn = await getPageMap(config, relative_path);
+  let page = rtn.slugMap['directorypost1'][0];
+
+  let temp = await fs.promises.readFile(getAbsoultPath(page.sourcePath));
+  let content = await temp.toString();
+
+  const pageStruct = await reloadSourcePage(config, page.sourcePath, content);
+
+  if (_DEBUG) {
+    console.log(pageStruct);
+  }
 });
 
 marked.run();
