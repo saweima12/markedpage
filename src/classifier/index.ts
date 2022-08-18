@@ -40,23 +40,24 @@ export const initClassifierMap: ClassiferMapHandler = async (classifierList) => 
 
   await Promise.all(
     classifierList.map(async (options: ClassifierOptions) => {
-    let _classifier: ClassifierHandle = undefined;
+      let _classifier: ClassifierHandle = undefined;
 
-    if (options.type == 'directory') _classifier = DirectoryClassifierHandle;
-    else if (options.type == 'frontmatter') _classifier = FrontMatterClassifierHandle;
-    else _classifier = options.type;
+      if (options.type == 'directory') _classifier = DirectoryClassifierHandle;
+      else if (options.type == 'frontmatter') _classifier = FrontMatterClassifierHandle;
+      else _classifier = options.type;
 
-    if (!_classifier) {
-      throw 'ClassifierHandle not found.';
-      return;
-    }
+      if (!_classifier) {
+        throw 'ClassifierHandle not found.';
+        return;
+      }
 
-    const handler = async (pages: Array<SourcePage>) => {
-      return await _classifier({ options: options, pages: pages });
-    };
+      const handler = async (pages: Array<SourcePage>) => {
+        return await _classifier({ options: options, pages: pages });
+      };
 
-    classifierMap[options.id] = handler;
-  }));
+      classifierMap[options.id] = handler;
+    })
+  );
 
   // Clear classifiedPage Cache
   classifiedPageCache = {};
