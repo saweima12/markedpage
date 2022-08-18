@@ -28,14 +28,10 @@ export const getSlugParams = (indexPath: string) => {
   return { slugKey: baseName, slugDate: undefined };
 };
 
-export const getPageAttribute = async (sourcePath: string) => {
-  // loading markdown content.
-  const temp = await fs.promises.readFile(sourcePath);
-  const content = temp.toString();
-
+export const getPageAttribute = async (body: string) => {
   // process fonrtmatter
-  const matterObj = fm(content);
-  let attributes = matterObj.attributes;
+  const matterObj = fm(body);
+  let attributes: Record<string, any> = matterObj.attributes;
 
   if (typeof attributes['excerpt'] === 'undefined') {
     // if <!-- more --> exists will join it to frontmatter.
@@ -47,17 +43,13 @@ export const getPageAttribute = async (sourcePath: string) => {
 
   return {
     metadata: attributes,
-    path: sourcePath,
     headings: headings
   };
 };
 
-export const extractBody = async (sourcePath: string): Promise<string> => {
+export const extractBody = async (body: string): Promise<string> => {
   // loading markdown content.
-  const temp = await fs.promises.readFile(sourcePath);
-  const content = temp.toString();
-  const matterObj = fm(content);
-
+  const matterObj = fm(body);
   let final = extractExcerpt(matterObj.body);
   // return body string.
   return final.body;
