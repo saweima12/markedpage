@@ -2,9 +2,8 @@ import path from 'path';
 import type { HmrContext, Plugin } from 'vite';
 
 import { initClassifierMap } from './classifier';
-import { getConfig, setConfig, initPageMap } from './source';
+import { getConfig, setConfig, reloadSourcePage } from './source';
 import { logger } from './log';
-
 
 const CONTENT_UPDATE_EVENT = 'markedpage:content-update';
 
@@ -18,8 +17,7 @@ export const markedpageVitePlugin = (siteConfig?: Record<string, any>): Plugin =
   return {
     name: 'markedpage-watch-docs',
     configResolved(config) {
-      if (siteConfig) 
-        setConfig(siteConfig);
+      if (siteConfig) setConfig(siteConfig);
     },
     configureServer(server) {
       // add watch path "${project_root}/docs"
@@ -29,7 +27,8 @@ export const markedpageVitePlugin = (siteConfig?: Record<string, any>): Plugin =
       const content_match = /\/docs\/(.+)\.md$/.exec(ctx.file);
       // didn't match, use default behavior.
       if (content_match) {
-        await onContentMatch(ctx, content_match[0], content_match[1]);
+        const content = await ctx.read();
+        await onContentMatch(ctx, content_match[0], content);
         return [];
       }
 
@@ -38,24 +37,21 @@ export const markedpageVitePlugin = (siteConfig?: Record<string, any>): Plugin =
   };
 };
 
-const onContentMatch = async (ctx: HmrContext, filePath: string, indexPath: string) => {
+const onContentMatch = async (ctx: HmrContext, sourcePath: string, content: string) => {
   const config = await getConfig();
 
-  // update pageMap & classiferMap
-  await initPageMap(config);
-  await initClassifierMap(config.classifier || []);
-
-  // print message
+  // clean console message.
   console.clear();
-  logger.info(`detect file change: ${indexPath}, reload pageMap.`);
+  // update pageMap & classiferMap
+  await reloadSourcePage(config, sourcePath, content);
+  await initClassifierMap(config.classifier || []);
 
   // update client
   ctx.server.ws.send({
     type: 'custom',
     event: 'markedpage:content-update',
     data: {
-      filePath: filePath,
-      indexPath: indexPath
+      sourcePath: sourcePath
     }
   });
 };

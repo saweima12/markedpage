@@ -10,15 +10,20 @@ import {
   extractBody
 } from './internal';
 
-import type { SourcePage, SourcePageCollection, SiteConfigDefault, MarkedConfig } from './types';
+import type {
+  SourcePage,
+  SourceParams,
+  PageMapCollection,
+  SiteConfigDefault,
+  MarkedConfig
+} from './types';
 import { logger } from './log';
-import { pathMap } from './main';
 
 // config cache.
 let _config: Record<string, any> = undefined;
 
 export const getConfig = async (configPath?: string) => {
-  if (!_config) _config = await loadConfigDefault(configPath);
+  if (!_config) await initConfigDefault(configPath);
   return _config;
 };
 
@@ -28,10 +33,9 @@ export const setConfig = (config: Record<string, any>) => {
   if (config.hasOwnProperty('marked')) {
     loadMarkedConfig(config.marked);
   }
+};
 
-}
-
-export const loadConfigDefault = async (configPath?: string): Promise<SiteConfigDefault> => {
+export const initConfigDefault = async (configPath?: string): Promise<SiteConfigDefault> => {
   configPath = configPath ?? './src/site.config.js';
   // get absoult path.
   let _path = getAbsoultPath(configPath);
@@ -41,28 +45,23 @@ export const loadConfigDefault = async (configPath?: string): Promise<SiteConfig
   if (!isExist) {
     // Not a file, or unexists.
     console.warn('config not found');
-    return {};
+    setConfig({});
+    return;
   }
 
   // is file, import it and loading config.
   const _loadConfig = await import(/* @vite-ignore */ _path);
   const config = _loadConfig.default;
-
-  if (config.hasOwnProperty('marked')) {
-    loadMarkedConfig(config.marked);
-  }
-
-  // update config cache.
-  _config = config;
-
-  return config;
+  setConfig(config);
 };
 
-let _pageMap: SourcePageCollection = undefined;
+// cache sourceDir path & pageMap.
+let _sourceDir: string = '';
+let _pageMap: PageMapCollection = undefined;
 
 export const getPageMap = async (config: SiteConfigDefault, sourceDir?: string) => {
   if (!_pageMap) {
-    logger.debug("::: Loading docs")
+    logger.debug('::: Loading docs');
     await initPageMap(config, sourceDir);
   }
   return _pageMap;
@@ -70,94 +69,118 @@ export const getPageMap = async (config: SiteConfigDefault, sourceDir?: string) 
 
 // loading all pages from sourceDir.
 export const initPageMap = async (config: SiteConfigDefault, sourceDir?: string) => {
-  sourceDir = sourceDir ?? './docs';
-  
+  // default source dir.
+  _sourceDir = sourceDir || './docs';
+
   // define path parameter
-  const relativeDirPath = getRelativePath(sourceDir);
+  const relativeDirPath = getRelativePath(_sourceDir);
   let sources = await getAvaliableSource(relativeDirPath);
-  
+
   // define result block;
   let pathMap: Record<string, SourcePage> = {};
   let slugMap: Record<string, Array<SourcePage>> = {};
-  
-  // 
-  const sourceDirPtn = new RegExp(`^${sourceDir}`);
-  await Promise.all(
-    Object.entries(sources).map(async ([sourcePath, pageAsync]) => {
-      const pageObj = await pageAsync();
 
+  const sourceDirPtn = new RegExp(`^${_sourceDir}`);
+  await Promise.all(
+    sources.map(async (sourcePath: string) => {
+      // process
+      const fullPath = getAbsoultPath(sourcePath);
+      const defaultIndexPath = sourcePath.replace(sourceDirPtn, '').replace(/(?:\.([^.]+))?$/, '');
+      const params = {
+        sourcePath: sourcePath,
+        fullPath: fullPath,
+        indexPath: defaultIndexPath
+      };
+
+      const temp = await fs.promises.readFile(fullPath);
+      const content = temp.toString();
+      const pageSturct = await loadSourcePage(config, content, params);
+
+      if (!pageSturct) return;
+
+      const { slugKey, indexPath } = pageSturct;
+
+      // add page to pathMap
+      pathMap[indexPath] = pageSturct;
+      // add page to slugMap
+      if (!slugMap.hasOwnProperty(slugKey)) slugMap[slugKey] = [];
+      slugMap[slugKey].push(pageSturct);
     })
   );
 
+  _pageMap = { pathMap: pathMap, slugMap: slugMap };
+};
 
-  _pageMap = { pathMap: pathMap, slugMap: slugMap }
+export const reloadSourcePage = async (
+  config: SiteConfigDefault,
+  sourcePath: string,
+  content: string
+) => {
+  if (!_pageMap) await initPageMap(config);
+
+  const sourceDirPtn = new RegExp(`^${_sourceDir}`);
+  // process filepath
+  const fullPath = getAbsoultPath(sourcePath);
+  const defaultIndexPath = sourcePath.replace(sourceDirPtn, '').replace(/(?:\.([^.]+))?$/, '');
+  const params = {
+    sourcePath: sourcePath,
+    fullPath: fullPath,
+    indexPath: defaultIndexPath
+  };
+  const pageStruct = await loadSourcePage(config, content, params);
+  if (!pageStruct) return;
+
+  const { indexPath } = pageStruct;
+
+  if (!_pageMap.pathMap[indexPath]) {
+    // indexPath change, reload pageMap
+    await initPageMap(config, _sourceDir);
+    logger.debug(`Detect file's indexPath change, reload pageMap.`);
+    return pageStruct;
+  }
+
+  logger.debug(`Detect file [ ${sourcePath} ] change, reload page.`);
+  // indexPath not change, overwrite struct.
+  _pageMap.pathMap[indexPath] = pageStruct;
+  return pageStruct;
 };
 
 // load: All markdown file from /docs/*
-const loadSourcePages = async (config: SiteConfigDefault, sourceDir: string) => {
-  const relativeDirPath = getRelativePath(sourceDir);
-  // loading source by vite & fast-glob.
-  let sources = await getAvaliableSource(relativeDirPath);
-  let pathMap: Record<string, SourcePage> = {};
-  let slugMap: Record<string, Array<SourcePage>> = {};
+const loadSourcePage = async (config: SiteConfigDefault, content: string, params: SourceParams) => {
+  // get params.
+  let { fullPath, indexPath, sourcePath } = params;
+  let { metadata, headings } = await getPageAttribute(content);
 
-  const ptn = new RegExp(`^${sourceDir}`);
-  // traversal alfl markdown page.
-  await Promise.all(
-    Object.entries(sources).map(async ([sourcePath, pageAsync]) => {
-      let pageObj = await pageAsync(); // get page's metadata;
-      let frontmatter = pageObj.metadata || {};
+  // exclude draft file on build.
+  if (metadata._draft && !isDev()) return;
 
-      // process indexPath & support customize indexPath by frontmatter.
-      let indexPath = sourcePath.replace(ptn, '').replace(/(?:\.([^.]+))?$/, '');
-      indexPath = frontmatter.indexPath ? frontmatter.indexPath : indexPath;
+  // get slugKey & indexPath
+  let newIndexPath = metadata.indexPath || indexPath;
+  let { slugKey, slugDate } = getSlugParams(indexPath);
+  // set created field
+  const fStat = await fs.promises.stat(params.fullPath);
+  metadata.created = metadata.created || slugDate || fStat.birthtime;
 
-      // process slugPath & slugMap.
-      let { slugKey, slugDate } = getSlugParams(indexPath);
-      if (!slugMap.hasOwnProperty(slugKey)) slugMap[slugKey] = [];
-
-      // get file path & created datetime.
-      const fStat = await fs.promises.stat(sourcePath);
-      frontmatter.created = frontmatter.created
-        ? frontmatter.created
-        : slugDate
-        ? slugDate
-        : fStat.birthtime;
-
-      // generate struct.
-      const pageStruct = {
-        frontMatter: frontmatter,
-        sourcePath: sourcePath,
-        indexPath: indexPath,
-        headings: pageObj.headings,
-        render: () => attachRender(pageObj.path),
-        raw: () => extractBody(sourcePath),
-        slugKey: slugKey
-      };
-
-      if (config.hasOwnProperty('extendPageData')) {
-        await config.extendPageData(pageStruct);
-      }
-
-      if (frontmatter._draft && !isDev()) {
-        return;
-      }
-
-      // add to pathMap & slugMap
-      pathMap[indexPath] = pageStruct;
-      slugMap[slugKey].push(pageStruct);
-      return pageStruct;
-    })
-  );
-  return {
-    pathMap: pathMap,
-    slugMap: slugMap
+  // generate struct.
+  const pageStruct = {
+    frontMatter: metadata,
+    sourcePath: sourcePath,
+    indexPath: newIndexPath,
+    headings: headings,
+    render: () => getRender(fullPath),
+    raw: () => getRaw(sourcePath),
+    slugKey: slugKey
   };
+
+  if (config.hasOwnProperty('extendPageData')) {
+    await config.extendPageData(pageStruct);
+  }
+  return pageStruct;
 };
 
-const getAvaliableSource = async (sourceDir: string, filter = ['.md']) => {
+const getAvaliableSource = async (sourceDir: string) => {
   // define recursive method to traversal all .md file under /docs.
-  const walk = async (sourcePath: string, initialContainer: Object) => {
+  const walk = async (sourcePath: string, initialArray: Array<string>) => {
     let items = await fs.promises.readdir(sourcePath);
     await Promise.all(
       items.map(async (item: string) => {
@@ -165,22 +188,18 @@ const getAvaliableSource = async (sourceDir: string, filter = ['.md']) => {
         const itemPath = path.join(sourcePath, item);
         const fullPath = getAbsoultPath(itemPath);
 
+        // make sure item is .md file.
         const fstat = await fs.promises.stat(fullPath);
         if (fstat.isDirectory()) {
-          initialContainer = await walk(itemPath, initialContainer);
-
+          initialArray = await walk(itemPath, initialArray);
         } else if (fstat.isFile()) {
-          filter.map((sname: string) => {
-            if (item.includes(sname)) {
-              initialContainer[itemPath] = () => getPageAttribute(fullPath);
-            }
-          });
+          if (item.includes('.md')) initialArray.push(itemPath);
         }
       })
     );
-    return initialContainer;
+    return initialArray;
   };
-  return await walk(sourceDir, {});
+  return await walk(sourceDir, []);
 };
 
 // load all markedConfig from config.marked
@@ -193,7 +212,13 @@ const loadMarkedConfig = (config: MarkedConfig) => {
   }
 };
 
-const attachRender = async (sourcePath: string) => {
-  const pageBody = await extractBody(sourcePath);
-  return marked.parse(pageBody);
+const getRaw = async (fullpath: string) => {
+  const temp = await fs.promises.readFile(fullpath);
+  const content = temp.toString();
+  return await extractBody(content);
+};
+
+const getRender = async (fullpath: string) => {
+  const rawBody = await getRaw(fullpath);
+  return marked.parse(rawBody);
 };
