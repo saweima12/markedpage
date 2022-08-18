@@ -133,7 +133,6 @@ export const reloadSourcePage = async (
 
   const { indexPath } = pageStruct;
 
-  console.log(_pageMap.pathMap, indexPath)
   if (!_pageMap.pathMap[indexPath]) {
     // indexPath change, reload pageMap
     await initPageMap(config, _sourceDir);
