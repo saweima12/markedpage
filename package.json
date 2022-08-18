@@ -1,5 +1,5 @@
 {
-  "version": "0.1.11-next.002",
+  "version": "0.1.11-next.003",
   "name": "markedpage",
   "description": "Markdown source provider & classification utilities",
   "main": "dist/index.js",
