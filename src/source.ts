@@ -80,7 +80,7 @@ export const initPageMap = async (config: SiteConfigDefault, sourceDir?: string)
   let pathMap: Record<string, SourcePage> = {};
   let slugMap: Record<string, Array<SourcePage>> = {};
 
-  const sourceDirPtn = new RegExp(`^${_sourceDir}`);
+  const sourceDirPtn = new RegExp(`^${relativeDirPath}`);
   await Promise.all(
     sources.map(async (sourcePath: string) => {
       // process
@@ -118,7 +118,8 @@ export const reloadSourcePage = async (
 ) => {
   if (!_pageMap) await initPageMap(config);
 
-  const sourceDirPtn = new RegExp(`^${_sourceDir}`);
+  const relativeDirPath = getRelativePath(_sourceDir);
+  const sourceDirPtn = new RegExp(`^${relativeDirPath}`);
   // process filepath
   const fullPath = getAbsoultPath(sourcePath);
   const defaultIndexPath = sourcePath.replace(sourceDirPtn, '').replace(/(?:\.([^.]+))?$/, '');
@@ -132,6 +133,7 @@ export const reloadSourcePage = async (
 
   const { indexPath } = pageStruct;
 
+  console.log(_pageMap.pathMap, indexPath)
   if (!_pageMap.pathMap[indexPath]) {
     // indexPath change, reload pageMap
     await initPageMap(config, _sourceDir);
