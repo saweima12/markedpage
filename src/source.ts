@@ -131,7 +131,7 @@ export const reloadSourcePage = async (
   const pageStruct = await loadSourcePage(config, content, params);
   if (!pageStruct) return;
 
-  const { indexPath } = pageStruct;
+  const { indexPath, slugKey } = pageStruct;
 
   if (!_pageMap.pathMap[indexPath]) {
     // indexPath change, reload pageMap
@@ -143,6 +143,13 @@ export const reloadSourcePage = async (
   logger.debug(`Detect file [ ${sourcePath} ] change, reload page.`);
   // indexPath not change, overwrite struct.
   _pageMap.pathMap[indexPath] = pageStruct;
+  
+  _pageMap.slugMap[slugKey].map((page, index) => {
+    if (page.indexPath == indexPath) {
+      // replace item
+      _pageMap.slugMap[slugKey][index] = pageStruct;
+    }
+  })
   return pageStruct;
 };
 
