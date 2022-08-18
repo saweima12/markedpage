@@ -139,7 +139,7 @@ export default config;
 https://github.com/saweima12/markedpage-example
 
 ## ChangeLog
-- [2022-08-18] v0.1.12 - Optimize markdown file reload.
+- [2022-08-18] v0.1.13 - Optimize markdown file reload.
 - [2022-07-22] v0.1.10 - Fix: marked config is not loaded properly
 - [2022-07-22] v0.1.8 - Add support for site.config.js auto-reload via configuration 
 - [2022-07-18] v0.1.7 - Replace chalk.js with kleur
