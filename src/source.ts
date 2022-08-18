@@ -168,7 +168,7 @@ const loadSourcePage = async (config: SiteConfigDefault, content: string, params
     indexPath: newIndexPath,
     headings: headings,
     render: () => getRender(fullPath),
-    raw: () => getRaw(sourcePath),
+    raw: () => getRaw(fullPath),
     slugKey: slugKey
   };
 
