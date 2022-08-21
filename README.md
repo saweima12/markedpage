@@ -121,16 +121,16 @@ export default config;
 ```js
 // src/routes/
 <script lang="ts">
-    import { invalidate } from '$app/navigation';
-    import { page } from '$app/stores';
-    import { onContentUpdate } from 'markedpage';
-
-    onContentUpdate((payload) => {
-        let slug = $page.params.slug;
-        // update endpoint data.
-        invalidate(`/api/posts.json`);
-        invalidate(`/api/posts/${slug}.json`);
-    });
+  import { invalidate } from '$app/navigation';
+  import { page } from '$app/stores';
+  import { onContentUpdate } from 'markedpage/helper';
+  
+  onContentUpdate((payload) => {
+      let slug = $page.params.slug;
+      // update endpoint data.
+      invalidate(`/api/posts.json`);
+      invalidate(`/api/posts/${slug}.json`);
+  });
 </script>
 ```
 
@@ -139,6 +139,7 @@ export default config;
 https://github.com/saweima12/markedpage-example
 
 ## ChangeLog
+- [2022-08-22] v0.1.14 - **breaking**Move `onContentUpdate` to `markedpage/helper` [[issues](https://github.com/saweima12/markedpage/issues/2)]
 - [2022-08-18] v0.1.13 - Optimize markdown file reload.
 - [2022-07-22] v0.1.10 - Fix: marked config is not loaded properly
 - [2022-07-22] v0.1.8 - Add support for site.config.js auto-reload via configuration 

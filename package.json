@@ -1,5 +1,5 @@
 {
-  "version": "0.1.13-next.7",
+  "version": "0.1.14",
   "name": "markedpage",
   "type": "module",
   "description": "Markdown source provider & classification utilities",
