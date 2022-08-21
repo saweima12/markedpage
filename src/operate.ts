@@ -91,7 +91,3 @@ export const pageMap = async () => {
   let config = await siteConfig();
   return await getPageMap(config, sourceDir);
 };
-
-export type { DirectoryClassifierResult } from './classifier/directory';
-export type { FrontMatterClassifierResult } from './classifier/frontmatter';
-export type { SourcePage };
