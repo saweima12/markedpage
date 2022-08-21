@@ -27,7 +27,12 @@ export default [
               helper: {
                 as: "helper"
               }
-            }
+            },
+            internal: [
+              "sources",
+              "classifier",
+              "*/internal"
+            ],
         })
       ]
     }]
