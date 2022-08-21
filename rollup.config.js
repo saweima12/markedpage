@@ -13,15 +13,27 @@ export default [
       sucrase({ transforms: ['typescript'] }),
       excludeDependenciesFromBundle({ dependencies: true })
     ],
-    input: 'src/main.ts',
-    output: [
-      // { file: pkg.main, format: 'cjs', sourcemap: false },
-      { file: pkg.module, format: 'es', sourcemap: false }
-    ]
+    input: ['src/index.ts'],
+    output: [{ file: pkg.module, format: 'es', sourcemap: false }]
+  },
+  {
+    plugins: [
+      resolve({ preferBuiltins: true }),
+      commonjs(),
+      sucrase({ transforms: ['typescript'] }),
+      excludeDependenciesFromBundle({ dependencies: true })
+    ],
+    input: ['src/helper.ts'],
+    output: [{ file: pkg.helper, format: 'es', sourcemap: false }]
   },
   {
     plugins: [dts()],
-    input: 'src/main.ts',
+    input: ['src/index.ts'],
     output: [{ file: 'dist/index.d.ts', format: 'es' }]
+  },
+  {
+    plugins: [dts()],
+    input: ['src/helper.ts'],
+    output: [{ file: 'dist/helper.d.ts', format: 'es' }]
   }
 ];
