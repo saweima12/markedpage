@@ -1,5 +1,5 @@
 {
-  "version": "0.1.13-next.3",
+  "version": "0.1.13-next.4",
   "name": "markedpage",
   "type": "module",
   "description": "Markdown source provider & classification utilities",
@@ -12,6 +12,7 @@
   "files": [
     "dist"
   ],
+  "types": "./dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
@@ -36,10 +37,10 @@
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "changeset": "^0.2.6",
-    "rimraf": "^3.0.2",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
     "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
     "rollup": "^2.78.0",
     "rollup-plugin-dts": "^4.2.2",
     "rollup-plugin-exclude-dependencies-from-bundle": "^1.1.22",
