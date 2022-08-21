@@ -1,10 +1,8 @@
 {
-  "version": "0.1.13-next.2",
+  "version": "0.1.13-next.3",
   "name": "markedpage",
+  "type": "module",
   "description": "Markdown source provider & classification utilities",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "helper": "dist/helper.mjs",
   "scripts": {
     "build": "rimraf -R dist && rollup -c",
     "test": "uvu -r tsm test test.ts$",
@@ -12,15 +10,16 @@
     "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
   },
   "files": [
-    "dist/*"
+    "dist"
   ],
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "import": "./dist/index.mjs",
+      "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
     "./helper": {
-      "import": "./dist/helper.mjs",
+      "import": "./dist/helper.js",
       "types": "./dist/helper.d.ts"
     }
   },
@@ -54,7 +53,6 @@
     "type": "git",
     "url": "https://github.com/saweima12/markedpage"
   },
-  "type": "module",
   "license": "MIT",
   "author": "Saweima <saweima12@gmail.com>",
   "keywords": [

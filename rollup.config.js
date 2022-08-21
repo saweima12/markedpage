@@ -1,7 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve';
 import dts from 'rollup-plugin-dts';
 import sucrase from '@rollup/plugin-sucrase';
-import pkg from './package.json';
 import commonjs from '@rollup/plugin-commonjs';
 import excludeDependenciesFromBundle from 'rollup-plugin-exclude-dependencies-from-bundle';
 
@@ -14,7 +13,7 @@ export default [
       excludeDependenciesFromBundle({ dependencies: true })
     ],
     input: ['src/index.ts'],
-    output: [{ file: pkg.module, format: 'es', sourcemap: false }]
+    output: [{ file: "./dist/index.js", format: 'es', sourcemap: false }]
   },
   {
     plugins: [
@@ -24,7 +23,7 @@ export default [
       excludeDependenciesFromBundle({ dependencies: true })
     ],
     input: ['src/helper.ts'],
-    output: [{ file: pkg.helper, format: 'es', sourcemap: false }]
+    output: [{ file: "./dist/helper.js", format: 'es', sourcemap: false }]
   },
   {
     plugins: [dts()],
