@@ -1,13 +1,9 @@
-import type { SourcePage } from '../types';
+import type { SourcePage, DirectoryClassifierResult } from '../types';
 import type { ClassifierHandle } from '../types';
 import { logger } from '../log';
 
 interface DirectoryClassifierParams {
   path: string;
-}
-
-export interface DirectoryClassifierResult {
-  pages: Array<SourcePage>;
 }
 
 export const DirectoryClassifierHandle: ClassifierHandle<

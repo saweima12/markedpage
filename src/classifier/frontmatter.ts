@@ -1,12 +1,10 @@
-import type { SourcePage } from '../types';
+import type { SourcePage, FrontMatterClassifierResult } from '../types';
 import type { ClassifierHandle } from '../types';
 import { logger } from '../log';
 
 interface FrontMatterClassifierParams {
   keys: Array<string>;
 }
-
-export type FrontMatterClassifierResult = Record<string, Array<SourcePage>>;
 
 export const FrontMatterClassifierHandle: ClassifierHandle<
   FrontMatterClassifierParams,
