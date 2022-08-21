@@ -6,7 +6,6 @@
     "noEmit": true,
     "importsNotUsedAsValues": "error",
     "isolatedModules": true,
-    "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
