@@ -4,8 +4,9 @@
   "description": "Markdown source provider & classification utilities",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
+  "helper": "dist/helper.mjs",
   "scripts": {
-    "build": "rollup -c",
+    "build": "rimraf -R dist && rollup -c",
     "test": "uvu -r tsm test test.ts$",
     "lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
     "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
@@ -14,9 +15,14 @@
     "dist/*"
   ],
   "exports": {
-    "import": "./dist/index.mjs",
-    "require": "./dist/index.cjs",
-    "types": "./dist/index.mjs.d.ts"
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./helper": {
+      "import": "./dist/helper.mjs",
+      "types": "./dist/helper.d.ts"
+    }
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
@@ -31,6 +37,7 @@
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "changeset": "^0.2.6",
+    "rimraf": "^3.0.2",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
     "prettier": "^2.7.1",
