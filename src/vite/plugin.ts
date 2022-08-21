@@ -1,17 +1,9 @@
 import path from 'path';
 import type { HmrContext, Plugin } from 'vite';
 
-import { initClassifierMap } from './classifier';
-import { getConfig, setConfig, reloadSourcePage } from './source';
-import { logger } from './log';
-
-const CONTENT_UPDATE_EVENT = 'markedpage:content-update';
-
-export const onContentUpdate = (callback: (payload: Record<string, any>) => void) => {
-  if (import.meta.hot) {
-    import.meta.hot.on(CONTENT_UPDATE_EVENT, callback);
-  }
-};
+import { initClassifierMap } from '../classifier';
+import { getConfig, setConfig, reloadSourcePage } from '../sources';
+import { CONTENT_UPDATE_EVENT } from './common';
 
 export const markedpageVitePlugin = (siteConfig?: Record<string, any>): Plugin => {
   return {
@@ -49,7 +41,7 @@ const onContentMatch = async (ctx: HmrContext, sourcePath: string, content: stri
   // update client
   ctx.server.ws.send({
     type: 'custom',
-    event: 'markedpage:content-update',
+    event: CONTENT_UPDATE_EVENT,
     data: {
       sourcePath: sourcePath
     }

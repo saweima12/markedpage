@@ -1,5 +1,5 @@
 import type { SourcePage } from '../types';
-import type { ClassifierHandle } from '.';
+import type { ClassifierHandle } from '../types';
 import { logger } from '../log';
 
 interface DirectoryClassifierParams {

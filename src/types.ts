@@ -1,7 +1,7 @@
 export interface SourcePage extends Record<string, any> {
   frontMatter: Record<string, any>;
-  sourcePath: PathLike | string;
-  indexPath: PathLike | string;
+  sourcePath: string;
+  indexPath: string;
   headings: Array<HeadingItem>;
   render: (() => Promise<string>) | any;
   raw: () => Promise<string>;
@@ -37,15 +37,14 @@ export interface HeadingItem extends Record<string, any> {
   id: string;
 }
 
-export type ClassifierType = 'directory' | 'frontmatter' | ClassifierHandle;
-
 export interface ClassifierOptions<Locals = Record<string, any>> {
   id: string;
   type: ClassifierType;
   params: Locals;
 }
 
-export interface ClassifierItem extends Record<string, any> {
-  id: string;
-  params: string;
+export interface ClassifierHandle<Locals = Record<string, any>, Result = Record<string, any>> {
+  (input: { options: ClassifierOptions<Locals>; pages: Array<SourcePage> | any }): Promise<Result>;
 }
+
+export type ClassifierType = 'directory' | 'frontmatter' | ClassifierHandle;

@@ -1,8 +1,8 @@
 import fs from 'fs';
 import { join } from 'path';
 import { suite } from 'uvu';
-import { getConfig, getPageMap, reloadSourcePage } from '../src/source';
-import { getAbsoultPath, getRelativePath } from '../src/internal';
+import { getConfig, getPageMap, reloadSourcePage } from '../src/sources';
+import { getAbsoultPath, getRelativePath } from '../src/sources/internal';
 import { getClassifiedResult, initClassifierMap } from '../src/classifier';
 
 import * as assert from 'uvu/assert';

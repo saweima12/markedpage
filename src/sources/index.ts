@@ -16,8 +16,8 @@ import type {
   PageMapCollection,
   SiteConfigDefault,
   MarkedConfig
-} from './types';
-import { logger } from './log';
+} from '../types';
+import { logger } from '../log';
 
 // config cache.
 let _config: Record<string, any> = undefined;

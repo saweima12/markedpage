@@ -1,9 +1,8 @@
-import fs from 'fs';
 import fm from 'front-matter';
 import removeMd from 'remove-markdown';
 import path from 'path';
 
-import type { HeadingItem } from './types';
+import type { HeadingItem } from '../types';
 import { marked } from 'marked';
 
 export const isDev = () => process.env.NODE_ENV == 'development';

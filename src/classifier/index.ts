@@ -1,22 +1,18 @@
-import type { SourcePage, ClassifierOptions } from '../types';
+import type { SourcePage, ClassifierHandle, ClassifierOptions } from '../types';
 import { DirectoryClassifierHandle } from './directory';
 import { FrontMatterClassifierHandle } from './frontmatter';
 
-export interface ClassifierHandle<Locals = Record<string, any>, Result = Record<string, any>> {
-  (input: { options: ClassifierOptions<Locals>; pages: Array<SourcePage> | any }): Promise<Result>;
-}
-
-export interface ClassifierItem {
+interface ClassifierObject {
   (pages: Array<SourcePage>): Promise<Record<string, any>>;
 }
 
 interface ClassiferMapHandler {
-  (classifierList: Array<ClassifierOptions>): Promise<Record<string, ClassifierItem>>;
+  (classifierList: Array<ClassifierOptions>): Promise<Record<string, ClassifierObject>>;
 }
 
 export let isInitial = false;
 let classifiedPageCache: Record<string, any> = {};
-let classifierMap: Record<string, ClassifierItem> = {};
+let classifierMap: Record<string, ClassifierObject> = {};
 
 export const getClassifiedResult = async (classifierId: string, pages: Array<SourcePage>) => {
   if (!classifierMap.hasOwnProperty(classifierId)) {
