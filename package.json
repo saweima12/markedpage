@@ -1,5 +1,5 @@
 {
-  "version": "0.1.13-next.4",
+  "version": "0.1.13-next.5",
   "name": "markedpage",
   "type": "module",
   "description": "Markdown source provider & classification utilities",
@@ -32,7 +32,7 @@
     "@rollup/plugin-sucrase": "^4.0.4",
     "@rollup/plugin-typescript": "^8.3.4",
     "@types/marked": "^4.0.5",
-    "@types/node": "^18.7.6",
+    "@types/node": "^18.7.8",
     "@types/remove-markdown": "^0.3.1",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
@@ -41,14 +41,14 @@
     "eslint-config-prettier": "^8.5.0",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
-    "rollup": "^2.78.0",
-    "rollup-plugin-dts": "^4.2.2",
+    "rollup": "^2.78.1",
     "rollup-plugin-exclude-dependencies-from-bundle": "^1.1.22",
+    "rollup-plugin-flat-dts": "^1.6.1",
     "tslib": "^2.4.0",
     "tsm": "^2.2.2",
     "typescript": "^4.7.4",
     "uvu": "^0.5.6",
-    "vite": "^3.0.8"
+    "vite": "^3.0.9"
   },
   "repository": {
     "type": "git",
